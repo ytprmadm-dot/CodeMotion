@@ -121,28 +121,6 @@
       </div>
     </div>
 
-    <!-- Preset Selector Bar (Desktop) -->
-    <div class="hidden lg:flex items-center gap-1.5 bg-studio-surface p-1 rounded-xl border border-studio-border">
-      <button onclick="loadPreset('auroraStars')" data-preset="auroraStars" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Aurora
-      </button>
-      <button onclick="loadPreset('neonWave')" data-preset="neonWave" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="waves" class="w-3.5 h-3.5"></i> Neon Wave
-      </button>
-      <button onclick="loadPreset('particleTunnel')" data-preset="particleTunnel" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="orbit" class="w-3.5 h-3.5"></i> Warp Tunnel
-      </button>
-      <button onclick="loadPreset('audioSpectrum')" data-preset="audioSpectrum" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="audio-waveform" class="w-3.5 h-3.5"></i> Spectrum
-      </button>
-      <button onclick="loadPreset('kineticType')" data-preset="kineticType" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="type" class="w-3.5 h-3.5"></i> Kinetic Text
-      </button>
-      <button onclick="loadPreset('universalSnippet')" data-preset="universalSnippet" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="braces" class="w-3.5 h-3.5"></i> Kode Teks
-      </button>
-    </div>
-
     <!-- Action Buttons -->
     <div class="flex items-center gap-2">
       <!-- Tombol Paste & Auto-Motion -->
@@ -150,19 +128,6 @@
         <i data-lucide="clipboard-paste" class="w-3.5 h-3.5"></i>
         <span class="hidden sm:inline">Tempel Kode Baru</span>
       </button>
-
-      <!-- Mobile / Semua Preset Dropdown -->
-      <select id="mobilePresetSelect" onchange="loadPreset(this.value)" title="Pilih Template Visual" class="bg-studio-surface border border-studio-border text-xs rounded-xl px-2.5 py-2 text-zinc-200 focus:outline-none focus:border-indigo-500">
-        <option value="auroraStars">Preset: Aurora & Stars</option>
-        <option value="neonWave">Preset: Neon Wave Matrix</option>
-        <option value="particleTunnel">Preset: Cyberpunk Warp Tunnel</option>
-        <option value="audioSpectrum">Preset: 3D Audio Spectrum</option>
-        <option value="kaleidoscope">Preset: Geometric Kaleidoscope</option>
-        <option value="kineticType">Preset: Kinetic Typography</option>
-        <option value="uiCard">Preset: Animated UI Card</option>
-        <option value="universalSnippet">Preset: Auto-Animate Kode Apapun</option>
-        <option value="customHtml">Preset: Custom HTML/CSS</option>
-      </select>
 
       <button onclick="openExportModal()" id="btnOpenExport" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-indigo-600/25 flex items-center gap-2 transition-all active:scale-95">
         <i data-lucide="download" class="w-4 h-4"></i>
@@ -617,68 +582,12 @@
 
   <script>
     // =========================================================================
-    // 1. PRESET TEMPLATE ANIMASI SIAP PAKAI (KOSONG / TANPA DEMO BAWAAN)
+    // 1. KONFIGURASI AWAL EDITOR
     // =========================================================================
-    const PRESETS = {
-      auroraStars: {
-        name: "untitled_script.js",
-        mode: "js",
-        code: ""
-      },
-
-      neonWave: {
-        name: "neon_wave.js",
-        mode: "js",
-        code: ""
-      },
-
-      particleTunnel: {
-        name: "warp_tunnel.js",
-        mode: "js",
-        code: ""
-      },
-
-      audioSpectrum: {
-        name: "spectrum.js",
-        mode: "js",
-        code: ""
-      },
-
-      kaleidoscope: {
-        name: "kaleidoscope.js",
-        mode: "js",
-        code: ""
-      },
-
-      universalSnippet: {
-        name: "snippet.txt",
-        mode: "showcase",
-        code: ""
-      },
-
-      typingCode: {
-        name: "typing_script.js",
-        mode: "js",
-        code: ""
-      },
-
-      kineticType: {
-        name: "kinetic_text.js",
-        mode: "js",
-        code: ""
-      },
-
-      uiCard: {
-        name: "ui_card.js",
-        mode: "js",
-        code: ""
-      },
-
-      customHtml: {
-        name: "custom_scene.html",
-        mode: "html",
-        code: ""
-      }
+    const INITIAL_SCRIPT = {
+      name: "untitled_script.js",
+      key: "custom_motion",
+      code: ""
     };
 
     // =========================================================================
@@ -686,7 +595,7 @@
     // =========================================================================
     const state = {
       isPlaying: true,
-      currentPreset: 'auroraStars',
+      currentPreset: 'custom_motion',
       mode: 'js', // 'js', 'html', atau 'showcase'
       modeOverride: 'auto', // 'auto', 'canvas', 'html', 'showcase'
       width: 1920,
@@ -943,7 +852,7 @@
     function init() {
       lucide.createIcons();
       refreshSavedScriptsDropdown();
-      loadPreset('auroraStars');
+      applyInitialScript();
       updateCanvasDimensions();
       window.addEventListener('resize', fitCanvasToViewport);
       
@@ -986,27 +895,14 @@
       requestAnimationFrame(animationLoop);
     }
 
-    function loadPreset(presetKey) {
-      const preset = PRESETS[presetKey];
-      if (!preset) return;
-
-      state.currentPreset = presetKey;
+    function applyInitialScript() {
+      state.currentPreset = INITIAL_SCRIPT.key;
       state.modeOverride = 'auto';
       const overrideEl = document.getElementById('renderModeOverride');
       if (overrideEl) overrideEl.value = 'auto';
 
-      codeEditor.value = preset.code;
-      document.getElementById('editorFileName').innerHTML = `<i data-lucide="file-code" class="w-3.5 h-3.5 text-indigo-400"></i> ${preset.name}`;
-      document.getElementById('mobilePresetSelect').value = presetKey;
-
-      // Update style tombol preset aktif
-      document.querySelectorAll('.preset-btn').forEach(btn => {
-        if (btn.dataset.preset === presetKey) {
-          btn.className = 'preset-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow';
-        } else {
-          btn.className = 'preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5';
-        }
-      });
+      codeEditor.value = INITIAL_SCRIPT.code;
+      document.getElementById('editorFileName').innerHTML = `<i data-lucide="file-code" class="w-3.5 h-3.5 text-indigo-400"></i> ${INITIAL_SCRIPT.name}`;
 
       lucide.createIcons();
       updateLineNumbers();
@@ -1043,11 +939,6 @@
       state.modeOverride = document.getElementById('renderModeOverride').value;
       compileUserCode();
       restartAnimation();
-    }
-
-    function loadAuroraCode() {
-      loadPreset('auroraStars');
-      showToast('Kode Aurora & Twinkling Stars dimuat ke editor!');
     }
 
     function updateMotionParams() {
