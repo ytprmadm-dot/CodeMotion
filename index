@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeMotion Studio — Generator Visual Motion & Ekspor MP4</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- MP4 Muxer untuk ekspor MP4 presisi tinggi via WebCodecs -->
+  <script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            studio: {
+              bg: '#09090b',
+              panel: '#121216',
+              surface: '#1a1a21',
+              border: '#272730',
+              accent: '#6366f1',
+              accentHover: '#4f46e5',
+              cyan: '#06b6d4',
+              pink: '#ec4899'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar bertema Studio */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121216;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #272730;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f4e;
+    }
+
+    /* Pola papan catur transparan di belakang canvas preview */
+    .canvas-backdrop {
+      background-color: #0b0b0e;
+      background-image: 
+        radial-gradient(#23232c 1px, transparent 1px),
+        radial-gradient(#23232c 1px, #0b0b0e 1px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+
+    /* Styling Timeline Scrubber */
+    input[type="range"].timeline-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"].timeline-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+    }
+    input[type="range"].timeline-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #6366f1;
+      margin-top: -5px;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.8);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"].timeline-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Tab & Line numbers editor */
+    .code-editor-area {
+      tab-size: 2;
+      -moz-tab-size: 2;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body class="bg-studio-bg text-zinc-100 font-sans antialiased h-screen flex flex-col overflow-hidden selection:bg-indigo-500/30 selection:text-indigo-200">
+
+  <!-- TOP HEADER / NAVBAR STUDIO -->
+  <header class="h-14 bg-studio-panel border-b border-studio-border px-4 flex items-center justify-between shrink-0 z-20">
+    <!-- Brand & Project Title -->
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <i data-lucide="clapperboard" class="w-4 h-4 text-white"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-bold text-sm tracking-tight text-white">CodeMotion <span class="text-indigo-400">Studio</span></h1>
+          <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Pro Engine</span>
+        </div>
+        <p class="text-[11px] text-zinc-400 hidden sm:block">Ubah Script Kode menjadi Animasi Video MP4 60FPS</p>
+      </div>
+    </div>
+
+    <!-- Preset Selector Bar (Desktop) -->
+    <div class="hidden lg:flex items-center gap-1.5 bg-studio-surface p-1 rounded-xl border border-studio-border">
+      <button onclick="loadPreset('auroraStars')" data-preset="auroraStars" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Aurora & Stars Canvas
+      </button>
+      <button onclick="loadPreset('typingCode')" data-preset="typingCode" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Typing Code
+      </button>
+      <button onclick="loadPreset('kineticType')" data-preset="kineticType" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="type" class="w-3.5 h-3.5"></i> Kinetic Typography
+      </button>
+      <button onclick="loadPreset('uiCard')" data-preset="uiCard" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="layers" class="w-3.5 h-3.5"></i> Animated UI Card
+      </button>
+      <button onclick="loadPreset('customHtml')" data-preset="customHtml" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="code-2" class="w-3.5 h-3.5"></i> Custom HTML/CSS
+      </button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-2">
+      <!-- Tombol Cepat Muat Kode Aurora -->
+      <button onclick="loadAuroraCode()" title="Muat Ulang Preset Aurora & Twinkling Stars" class="px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95">
+        <i data-lucide="moon-star" class="w-3.5 h-3.5"></i>
+        <span class="hidden sm:inline">Muat Kode Aurora</span>
+      </button>
+
+      <!-- Mobile Preset Dropdown -->
+      <select id="mobilePresetSelect" onchange="loadPreset(this.value)" class="lg:hidden bg-studio-surface border border-studio-border text-xs rounded-lg px-2.5 py-2 text-zinc-200 focus:outline-none focus:border-indigo-500">
+        <option value="auroraStars">Aurora & Stars Canvas</option>
+        <option value="typingCode">Typing Code Effect</option>
+        <option value="kineticType">Kinetic Typography</option>
+        <option value="uiCard">Animated UI Card</option>
+        <option value="customHtml">Custom HTML/CSS Canvas</option>
+      </select>
+
+      <button onclick="openExportModal()" id="btnOpenExport" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-indigo-600/25 flex items-center gap-2 transition-all active:scale-95">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>Ekspor MP4</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE (SPLIT SCREEN) -->
+  <main class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+
+    <!-- LEFT PANEL: CODE & PARAMETER EDITOR -->
+    <section class="w-full lg:w-[44%] xl:w-[42%] h-[46%] lg:h-full bg-studio-panel border-b lg:border-b-0 lg:border-r border-studio-border flex flex-col shrink-0">
+      
+      <!-- Editor Toolbar -->
+      <div class="h-10 px-3 bg-studio-surface/70 border-b border-studio-border flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+          </div>
+          <span id="editorFileName" class="text-xs font-mono text-zinc-300 ml-2 flex items-center gap-1.5">
+            <i data-lucide="file-code" class="w-3.5 h-3.5 text-indigo-400"></i>
+            motion_scene.js
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <span id="compileStatus" class="text-[11px] text-emerald-400 flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Siap
+          </span>
+          <button onclick="copyEditorCode()" title="Salin Kode" class="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="applyAndRestart()" title="Jalankan Ulang Script" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded-lg flex items-center gap-1 transition-colors">
+            <i data-lucide="play" class="w-3 h-3 text-emerald-400"></i> Terapkan
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode Helper Banner -->
+      <div id="modeHelperBanner" class="px-3 py-1.5 bg-indigo-950/40 border-b border-indigo-500/20 text-[11px] text-indigo-200/90 flex items-center justify-between">
+        <span id="modeHelperText">Variabel native Canvas 2D: <code class="text-cyan-300 font-mono">ctx, w, h, t, progress</code> (serta alias <code class="text-zinc-300 font-mono">width, height, time, frame</code>).</span>
+        <button onclick="showApiDocsModal()" class="text-cyan-400 hover:underline font-medium shrink-0 ml-2">Panduan API</button>
+      </div>
+
+      <!-- Panel Parameter Interaktif Opsional (Aurora, Bintang & Overlay Teks) -->
+      <div id="motionParamsPanel" class="px-3 py-2 bg-studio-surface/90 border-b border-studio-border space-y-2 shrink-0">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+            <i data-lucide="sliders-horizontal" class="w-3 h-3 text-indigo-400"></i>
+            Parameter Visual & Overlay Motion
+          </span>
+          <button onclick="resetMotionParams()" class="text-[10px] text-indigo-400 hover:text-indigo-300 font-medium">Reset Default</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+          <!-- Kecepatan Aurora -->
+          <div class="bg-studio-panel/90 border border-studio-border/80 rounded-lg px-2.5 py-1.5">
+            <div class="flex justify-between text-zinc-300 mb-1">
+              <span>Kecepatan Aurora</span>
+              <span id="auroraSpeedVal" class="font-mono text-cyan-400">1.00x</span>
+            </div>
+            <input id="auroraSpeedSlider" type="range" min="0" max="3" step="0.05" value="1" oninput="updateMotionParams()" class="w-full accent-indigo-500 h-1.5 bg-zinc-800 rounded-lg cursor-pointer" />
+          </div>
+
+          <!-- Intensitas Bintang -->
+          <div class="bg-studio-panel/90 border border-studio-border/80 rounded-lg px-2.5 py-1.5">
+            <div class="flex justify-between text-zinc-300 mb-1">
+              <span>Intensitas Bintang</span>
+              <span id="starIntensityVal" class="font-mono text-emerald-400">1.00x</span>
+            </div>
+            <input id="starIntensitySlider" type="range" min="0" max="2.5" step="0.05" value="1" oninput="updateMotionParams()" class="w-full accent-emerald-500 h-1.5 bg-zinc-800 rounded-lg cursor-pointer" />
+          </div>
+        </div>
+
+        <!-- Overlay Teks / Judul Motion di atas Kanvas -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center pt-0.5">
+          <div class="sm:col-span-5">
+            <input id="overlayTitleInput" type="text" placeholder="Judul Motion (opsional)..." oninput="updateMotionParams()" class="w-full bg-studio-panel border border-studio-border rounded-lg px-2.5 py-1 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-indigo-500" />
+          </div>
+          <div class="sm:col-span-4">
+            <input id="overlaySubtitleInput" type="text" placeholder="Subjudul / caption..." oninput="updateMotionParams()" class="w-full bg-studio-panel border border-studio-border rounded-lg px-2.5 py-1 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-indigo-500" />
+          </div>
+          <div class="sm:col-span-3">
+            <select id="overlayAlignSelect" onchange="updateMotionParams()" class="w-full bg-studio-panel border border-studio-border rounded-lg px-2 py-1 text-xs text-zinc-200 focus:outline-none focus:border-indigo-500">
+              <option value="center" selected>Tengah</option>
+              <option value="bottom-left">Kiri Bawah</option>
+              <option value="top-left">Kiri Atas</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Editor Container dengan Line Numbers -->
+      <div class="relative flex-1 flex overflow-hidden bg-[#0d0d11]">
+        <div id="lineNumbers" class="w-10 py-3 pr-2 text-right font-mono text-xs text-zinc-600 select-none bg-[#0b0b0f] border-r border-studio-border/60 overflow-hidden leading-[1.6]">1</div>
+        <textarea 
+          id="codeEditor" 
+          spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          class="code-editor-area flex-1 w-full h-full bg-transparent text-zinc-100 font-mono text-xs p-3 resize-none focus:outline-none overflow-auto whitespace-pre"
+        ></textarea>
+      </div>
+
+      <!-- Error Log Bar (Tersembunyi jika tidak ada error) -->
+      <div id="errorConsole" class="hidden px-3 py-2 bg-rose-950/90 border-t border-rose-500/40 text-rose-200 font-mono text-xs flex items-start gap-2 max-h-24 overflow-y-auto">
+        <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 shrink-0 mt-0.5"></i>
+        <span id="errorText" class="break-all"></span>
+      </div>
+
+      <!-- Composition Settings Footer (Resolusi, Durasi, FPS, Kecepatan) -->
+      <div class="p-3 bg-studio-panel border-t border-studio-border grid grid-cols-2 sm:grid-cols-4 gap-2.5 shrink-0">
+        <!-- Resolusi -->
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Resolusi</label>
+          <select id="resSelect" onchange="updateSettings()" class="w-full bg-studio-surface border border-studio-border rounded-lg px-2 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-indigo-500">
+            <option value="1080x1080">1080×1080 (1:1)</option>
+            <option value="1920x1080" selected>1920×1080 (16:9)</option>
+            <option value="1080x1920">1080×1920 (9:16)</option>
+          </select>
+        </div>
+
+        <!-- Durasi -->
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Durasi (Detik)</label>
+          <div class="flex items-center bg-studio-surface border border-studio-border rounded-lg px-2 py-1">
+            <input id="durationInput" type="number" min="1" max="30" step="0.5" value="5" onchange="updateSettings()" class="w-full bg-transparent text-xs text-zinc-200 focus:outline-none font-mono" />
+            <span class="text-[11px] text-zinc-500">dtk</span>
+          </div>
+        </div>
+
+        <!-- FPS -->
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Frame Rate</label>
+          <select id="fpsSelect" onchange="updateSettings()" class="w-full bg-studio-surface border border-studio-border rounded-lg px-2 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-indigo-500 font-mono">
+            <option value="30">30 FPS</option>
+            <option value="60" selected>60 FPS</option>
+          </select>
+        </div>
+
+        <!-- Kecepatan -->
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-semibold mb-1">Kecepatan</label>
+          <select id="speedSelect" onchange="updateSettings()" class="w-full bg-studio-surface border border-studio-border rounded-lg px-2 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-indigo-500 font-mono">
+            <option value="0.5">0.5x Lambat</option>
+            <option value="1" selected>1.0x Normal</option>
+            <option value="1.5">1.5x Cepat</option>
+            <option value="2">2.0x Kilat</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: LIVE PREVIEW VIEWPORT & TIMELINE -->
+    <section class="flex-1 h-[54%] lg:h-full flex flex-col bg-studio-bg overflow-hidden relative">
+      
+      <!-- Viewport Top Info Bar -->
+      <div class="h-10 px-4 bg-studio-panel/80 border-b border-studio-border flex items-center justify-between text-xs shrink-0">
+        <div class="flex items-center gap-3">
+          <span class="text-zinc-400 font-medium flex items-center gap-1.5">
+            <i data-lucide="monitor-play" class="w-3.5 h-3.5 text-cyan-400"></i>
+            Kanvas Preview
+          </span>
+          <span id="badgeResolution" class="px-2 py-0.5 rounded-md bg-studio-surface border border-studio-border font-mono text-[11px] text-zinc-300">1920 × 1080</span>
+          <span id="badgeAspect" class="hidden sm:inline-block px-2 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-[11px] text-indigo-300">16:9 Landscape</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-1.5 cursor-pointer text-zinc-400 hover:text-zinc-200">
+            <input id="loopToggle" type="checkbox" checked class="rounded bg-studio-surface border-studio-border text-indigo-500 focus:ring-0" />
+            <span>Loop</span>
+          </label>
+          <span id="zoomLevelText" class="font-mono text-[11px] text-zinc-500">Fit 100%</span>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport Stage -->
+      <div id="viewportContainer" class="flex-1 canvas-backdrop p-4 sm:p-6 flex items-center justify-center overflow-hidden relative">
+        <!-- Wrapper bayangan untuk canvas yang proporsional -->
+        <div id="canvasFrameWrapper" class="relative shadow-2xl shadow-black/80 ring-1 ring-white/10 rounded-lg overflow-hidden bg-black flex items-center justify-center transition-all duration-200">
+          <canvas id="previewCanvas" class="block w-full h-full"></canvas>
+        </div>
+      </div>
+
+      <!-- TIMELINE & PLAYBACK CONTROLS BAR -->
+      <div class="bg-studio-panel border-t border-studio-border px-4 py-3 shrink-0 space-y-2.5">
+        
+        <!-- Scrubber / Timeline Track -->
+        <div class="flex items-center gap-3">
+          <span id="currentTimeLabel" class="font-mono text-xs text-indigo-400 font-semibold w-14">00:00.0</span>
+          
+          <div class="relative flex-1 flex items-center">
+            <input 
+              id="timelineScrubber" 
+              type="range" 
+              min="0" 
+              max="1000" 
+              value="0" 
+              class="timeline-slider w-full z-10"
+            />
+            <!-- Progress Track Visual -->
+            <div class="absolute inset-x-0 h-1.5 bg-studio-surface rounded-full overflow-hidden pointer-events-none">
+              <div id="timelineProgressFill" class="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 w-0"></div>
+            </div>
+          </div>
+
+          <span id="totalTimeLabel" class="font-mono text-xs text-zinc-400 w-14 text-right">00:05.0</span>
+        </div>
+
+        <!-- Transport Buttons & Frame Counter -->
+        <div class="flex items-center justify-between">
+          <!-- Left: Frame Info -->
+          <div class="hidden sm:flex items-center gap-2 text-[11px] font-mono text-zinc-400">
+            <span class="px-2 py-1 rounded bg-studio-surface border border-studio-border">
+              Frame: <strong id="frameCounter" class="text-zinc-200">0</strong> / <span id="totalFramesLabel">300</span>
+            </span>
+          </div>
+
+          <!-- Center: Playback Transport -->
+          <div class="flex items-center gap-2 mx-auto sm:mx-0">
+            <button onclick="restartAnimation()" title="Ulang dari Awal (Home)" class="p-2 rounded-xl bg-studio-surface hover:bg-zinc-800 border border-studio-border text-zinc-300 hover:text-white transition-all active:scale-95">
+              <i data-lucide="skip-back" class="w-4 h-4"></i>
+            </button>
+
+            <button onclick="stepFrame(-1)" title="Mundur 1 Frame" class="p-2 rounded-xl bg-studio-surface hover:bg-zinc-800 border border-studio-border text-zinc-300 hover:text-white transition-all active:scale-95">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+
+            <button id="playPauseBtn" onclick="togglePlay()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/25 transition-all active:scale-95">
+              <i id="playPauseIcon" data-lucide="pause" class="w-4 h-4"></i>
+              <span id="playPauseText">Jeda</span>
+            </button>
+
+            <button onclick="stepFrame(1)" title="Maju 1 Frame" class="p-2 rounded-xl bg-studio-surface hover:bg-zinc-800 border border-studio-border text-zinc-300 hover:text-white transition-all active:scale-95">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <!-- Right: Quick Export Trigger -->
+          <div class="hidden md:flex items-center gap-2">
+            <span class="text-[11px] text-zinc-500">Spasi: Play/Pause</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- MODAL EKSPOR VIDEO MP4 -->
+  <div id="exportModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-studio-panel border border-studio-border rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 relative">
+      
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <i data-lucide="film" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white">Render & Ekspor Video</h2>
+            <p class="text-xs text-zinc-400">Offline Frame-by-Frame Encoder (Anti-Lag)</p>
+          </div>
+        </div>
+        <button id="closeExportBtn" onclick="closeExportModal()" class="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Ringkasan Spesifikasi Video -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-3.5 grid grid-cols-2 gap-3 text-xs">
+        <div>
+          <span class="text-zinc-500 block text-[11px]">Resolusi Output</span>
+          <span id="exportSpecRes" class="font-mono font-semibold text-zinc-200">1920 × 1080 px</span>
+        </div>
+        <div>
+          <span class="text-zinc-500 block text-[11px]">Durasi & FPS</span>
+          <span id="exportSpecDur" class="font-mono font-semibold text-zinc-200">5.0 dtk @ 60 FPS</span>
+        </div>
+        <div>
+          <span class="text-zinc-500 block text-[11px]">Total Frame</span>
+          <span id="exportSpecFrames" class="font-mono font-semibold text-cyan-400">300 Frames</span>
+        </div>
+        <div>
+          <span class="text-zinc-500 block text-[11px]">Codec Engine</span>
+          <span id="exportSpecCodec" class="font-mono font-semibold text-emerald-400">H.264 MP4 (WebCodecs)</span>
+        </div>
+      </div>
+
+      <!-- Opsi Kualitas Bitrate -->
+      <div id="exportOptionsSection">
+        <label class="block text-xs font-medium text-zinc-300 mb-1.5">Kualitas Video (Bitrate)</label>
+        <select id="bitrateSelect" class="w-full bg-studio-surface border border-studio-border rounded-xl px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-indigo-500">
+          <option value="5000000">Standar (5 Mbps - Ukuran Ringan)</option>
+          <option value="12000000" selected>Tinggi (12 Mbps - Sosial Media / YouTube)</option>
+          <option value="25000000">Ultra Studio (25 Mbps - Kualitas Maksimal)</option>
+        </select>
+      </div>
+
+      <!-- Progress Bar Rendering (Muncul saat merender) -->
+      <div id="renderProgressBox" class="hidden space-y-2.5 bg-zinc-900/90 border border-indigo-500/30 rounded-xl p-4">
+        <div class="flex items-center justify-between text-xs">
+          <span id="renderStatusLabel" class="font-medium text-indigo-300 flex items-center gap-2">
+            <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+            Merender frame...
+          </span>
+          <span id="renderPercentLabel" class="font-mono font-bold text-white">0%</span>
+        </div>
+        <div class="w-full h-2.5 bg-studio-surface rounded-full overflow-hidden">
+          <div id="renderProgressBar" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 w-0 transition-all duration-75"></div>
+        </div>
+        <div class="flex justify-between text-[11px] font-mono text-zinc-400">
+          <span id="renderFrameDetail">Frame 0 / 300</span>
+          <span id="renderEtaLabel">Estimasi: Menghitung...</span>
+        </div>
+      </div>
+
+      <!-- Hasil Download Box (Muncul setelah selesai) -->
+      <div id="renderCompleteBox" class="hidden bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 text-center space-y-3">
+        <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+          <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-white">Rendering Selesai!</h3>
+          <p id="renderedFileSize" class="text-xs text-emerald-300/80 mt-0.5">File siap diunduh.</p>
+        </div>
+        <a id="downloadVideoLink" download="codemotion-video.mp4" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 cursor-pointer transition-all">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>Simpan File Video (.MP4)</span>
+        </a>
+      </div>
+
+      <!-- Action Footer -->
+      <div id="exportActionButtons" class="flex items-center gap-2.5 pt-1">
+        <button onclick="closeExportModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-studio-surface hover:bg-zinc-800 border border-studio-border text-xs font-medium text-zinc-300 transition-colors">
+          Batal
+        </button>
+        <button id="startRenderBtn" onclick="startVideoExport()" class="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/25 transition-all">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>Mulai Render MP4</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL PANDUAN API & SINTAKS -->
+  <div id="apiDocsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-studio-panel border border-studio-border rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-studio-border pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="book-open" class="w-4 h-4 text-cyan-400"></i>
+          Panduan Scripting CodeMotion Studio
+        </h3>
+        <button onclick="closeApiDocsModal()" class="text-zinc-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-zinc-300 max-h-[60vh] overflow-y-auto pr-1 leading-relaxed">
+        <p>Anda dapat menulis kode animasi dalam <strong>2 Mode</strong>: JavaScript Canvas API (untuk motion graphics 60fps presisi) atau HTML/CSS murni.</p>
+        
+        <div class="bg-studio-surface p-3 rounded-xl border border-studio-border space-y-1.5">
+          <div class="font-semibold text-indigo-300">Variabel Bawaan (Mode Native Canvas 2D):</div>
+          <ul class="space-y-1 font-mono text-[11px] text-zinc-300">
+            <li><span class="text-cyan-400">ctx</span> — Konteks Canvas 2D (<code class="text-zinc-400">CanvasRenderingContext2D</code>)</li>
+            <li><span class="text-cyan-400">w, h</span> — Lebar &amp; tinggi resolusi aktif (alias <code class="text-zinc-400">width, height</code>)</li>
+            <li><span class="text-cyan-400">t</span> — Waktu animasi dalam detik (alias <code class="text-zinc-400">time</code>)</li>
+            <li><span class="text-cyan-400">progress</span> — Progres animasi dari <code class="text-amber-300">0.0</code> hingga <code class="text-amber-300">1.0</code></li>
+            <li><span class="text-cyan-400">params</span> — Objek parameter slider &amp; overlay (<code class="text-zinc-400">auroraSpeed, starIntensity, title, subtitle, align</code>)</li>
+            <li><span class="text-cyan-400">easeOutCubic(x), easeOutElastic(x), roundRect(...)</span> — Helper siap pakai</li>
+          </ul>
+        </div>
+
+        <div class="bg-studio-surface p-3 rounded-xl border border-studio-border space-y-1.5">
+          <div class="font-semibold text-pink-300">Mode Custom HTML/CSS:</div>
+          <p class="text-zinc-400">Jika kode dimulai dengan tag <code class="text-zinc-200">&lt;div&gt;</code> atau <code class="text-zinc-200">&lt;style&gt;</code>, sistem otomatis merendernya melalui SVG ForeignObject ke Canvas. Gunakan variabel CSS <code class="text-cyan-400">--progress</code> (0 s/d 1) di dalam CSS Anda untuk menggerakkan animasi!</p>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeApiDocsModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-studio-surface border border-studio-border text-white px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-medium pointer-events-none">
+    <i data-lucide="info" class="w-4 h-4 text-indigo-400"></i>
+    <span id="toastMessage">Notifikasi</span>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. PRESET TEMPLATE ANIMASI SIAP PAKAI
+    // =========================================================================
+    const PRESETS = {
+      auroraStars: {
+        name: "aurora_twinkling_stars.js",
+        mode: "js",
+        code: `ctx.globalCompositeOperation = "source-over";
+ctx.fillStyle = "#040814";
+ctx.fillRect(0, 0, w, h);
+ctx.globalCompositeOperation = "screen";
+
+const auroraTime = t * params.auroraSpeed;
+const auroraBands = [
+  { x: 0.22, y: 0.30, r: 0.45, color: "16, 185, 129", speed: 0.45, phase: 0.4 },
+  { x: 0.58, y: 0.42, r: 0.52, color: "34, 211, 238", speed: 0.36, phase: 1.9 },
+  { x: 0.78, y: 0.26, r: 0.40, color: "139, 92, 246", speed: 0.52, phase: 3.7 }
+];
+
+for (const b of auroraBands) {
+  const cx = (b.x + Math.cos(auroraTime * b.speed + b.phase) * 0.18) * w;
+  const cy = (b.y + Math.sin(auroraTime * b.speed * 0.75 + b.phase) * 0.12) * h;
+  const radius = b.r * Math.max(w, h) * (0.92 + 0.14 * Math.cos(auroraTime * 1.1 + b.phase));
+
+  const grad = ctx.createRadialGradient(cx, cy, radius * 0.04, cx, cy, radius);
+  grad.addColorStop(0, \`rgba(\${b.color}, 0.48)\`);
+  grad.addColorStop(0.55, \`rgba(\${b.color}, 0.16)\`);
+  grad.addColorStop(1, \`rgba(\${b.color}, 0)\`);
+
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+const scale = Math.min(w, h) / 1080;
+const starCount = Math.min(140, Math.max(0, Math.round(36 * params.starIntensity)));
+for (let i = 0; i < starCount; i++) {
+  const sx = (((i * 211 + t * 22) % (w + 120)) - 60);
+  const sy = (((i * 149 + Math.sin(t * 0.8 + i) * 35 + h * 2) % (h + 120)) - 60);
+  const sr = (2 + (i % 4) * 1.8) * scale;
+  const twinkle = Math.min(1, (0.15 + 0.55 * (0.5 + 0.5 * Math.sin(t * 3.2 + i * 1.3))) * Math.max(0.2, params.starIntensity));
+
+  ctx.fillStyle = \`rgba(224, 242, 254, \${twinkle})\`;
+  ctx.beginPath();
+  ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+ctx.globalCompositeOperation = "source-over";`
+      },
+
+      typingCode: {
+        name: "typing_code_effect.js",
+        mode: "js",
+        code: `// PRESET: Typing Code Effect (Terminal macOS Modern)
+const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+bgGrad.addColorStop(0, '#090d16');
+bgGrad.addColorStop(1, '#111827');
+ctx.fillStyle = bgGrad;
+ctx.fillRect(0, 0, w, h);
+
+const glow = ctx.createRadialGradient(w*0.5, h*0.5, 40, w*0.5, h*0.5, w*0.45);
+glow.addColorStop(0, 'rgba(99, 102, 241, 0.22)');
+glow.addColorStop(1, 'rgba(99, 102, 241, 0)');
+ctx.fillStyle = glow;
+ctx.fillRect(0, 0, w, h);
+
+const enter = easeOutCubic(Math.min(progress * 4, 1));
+const winW = Math.min(w * 0.82, 1180);
+const winH = Math.min(h * 0.68, 660);
+const winX = (w - winW) / 2;
+const winY = (h - winH) / 2 + (1 - enter) * 40;
+
+ctx.save();
+ctx.globalAlpha = enter;
+
+ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+ctx.shadowBlur = 50;
+ctx.shadowOffsetY = 25;
+ctx.fillStyle = '#0f111a';
+roundRect(ctx, winX, winY, winW, winH, 22);
+ctx.fill();
+ctx.shadowBlur = 0;
+ctx.shadowOffsetY = 0;
+
+ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+ctx.lineWidth = 2;
+ctx.stroke();
+
+ctx.fillStyle = '#181b28';
+roundRectTop(ctx, winX, winY, winW, 54, 22);
+ctx.fill();
+
+const dots = ['#ff5f56', '#ffbd2e', '#27c93f'];
+dots.forEach((color, idx) => {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(winX + 32 + idx * 24, winY + 27, 7.5, 0, Math.PI * 2);
+  ctx.fill();
+});
+
+ctx.fillStyle = '#94a3b8';
+ctx.font = '600 18px "JetBrains Mono", monospace';
+ctx.textAlign = 'center';
+ctx.fillText('deploy_ai_agent.ts', winX + winW / 2, winY + 33);
+
+const codeLines = [
+  [{ t: 'import', c: '#c792ea' }, { t: ' { createAgent } ', c: '#e2e8f0' }, { t: 'from', c: '#c792ea' }, { t: " '@studio/core'", c: '#a5d6ff' }],
+  [{ t: '', c: '#fff' }],
+  [{ t: 'const', c: '#c792ea' }, { t: ' motionAgent = ', c: '#e2e8f0' }, { t: 'await', c: '#89ddff' }, { t: ' createAgent({', c: '#82aaff' }],
+  [{ t: '  model: ', c: '#e2e8f0' }, { t: '"gemini-3-pro-vision"', c: '#c3e88d' }, { t: ',', c: '#89ddff' }],
+  [{ t: '  fps: ', c: '#e2e8f0' }, { t: '60', c: '#f78c6c' }, { t: ',', c: '#89ddff' }],
+  [{ t: '  resolution: ', c: '#e2e8f0' }, { t: '"1080p_HD"', c: '#c3e88d' }, { t: ',', c: '#89ddff' }],
+  [{ t: '  renderMode: ', c: '#e2e8f0' }, { t: '"hardware_mp4"', c: '#c3e88d' }],
+  [{ t: '});', c: '#82aaff' }],
+  [{ t: '', c: '#fff' }],
+  [{ t: '// Render visual motion secara real-time', c: '#64748b' }],
+  [{ t: 'await', c: '#c792ea' }, { t: ' motionAgent.', c: '#e2e8f0' }, { t: 'exportVideo', c: '#82aaff' }, { t: '({ quality: ', c: '#e2e8f0' }, { t: '"ULTRA"', c: '#ffcb6b' }, { t: ' });', c: '#e2e8f0' }]
+];
+
+const totalChars = codeLines.reduce((sum, line) => sum + line.reduce((s, seg) => s + seg.t.length, 0), 0);
+const typeProgress = Math.min(Math.max((progress - 0.1) / 0.72, 0), 1);
+const visibleChars = Math.floor(totalChars * typeProgress);
+
+let charCounter = 0;
+const fontSize = Math.max(18, Math.floor(winW * 0.021));
+const lineHeight = fontSize * 1.65;
+ctx.font = \`500 \${fontSize}px "JetBrains Mono", monospace\`;
+ctx.textAlign = 'left';
+
+let cursorX = winX + 85;
+let cursorY = winY + 105;
+
+codeLines.forEach((line, lineIdx) => {
+  const y = winY + 105 + lineIdx * lineHeight;
+  ctx.fillStyle = '#475569';
+  ctx.fillText(String(lineIdx + 1).padStart(2, '0'), winX + 30, y);
+
+  let x = winX + 85;
+  line.forEach(seg => {
+    if (charCounter >= visibleChars) return;
+    const remaining = visibleChars - charCounter;
+    const textToDraw = seg.t.slice(0, remaining);
+    
+    ctx.fillStyle = seg.c;
+    ctx.fillText(textToDraw, x, y);
+    x += ctx.measureText(textToDraw).width;
+    charCounter += seg.t.length;
+    
+    cursorX = x;
+    cursorY = y;
+  });
+});
+
+if (Math.sin(t * 10) > 0 || typeProgress < 1) {
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillRect(cursorX + 4, cursorY - fontSize + 4, 11, fontSize + 2);
+}
+
+ctx.restore();`
+      },
+
+      kineticType: {
+        name: "kinetic_typography.js",
+        mode: "js",
+        code: `// PRESET: Kinetic Typography Dinamis
+ctx.fillStyle = '#07070a';
+ctx.fillRect(0, 0, w, h);
+
+ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+ctx.lineWidth = 1;
+const gridSize = 80;
+const offsetGrid = (t * 30) % gridSize;
+for (let x = offsetGrid; x < w; x += gridSize) {
+  ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+}
+for (let y = offsetGrid; y < h; y += gridSize) {
+  ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+}
+
+const scenes = [
+  { word: "TULIS KODE.", sub: "DARI IDE MENJADI REALITA", accent: "#6366f1", start: 0.0, end: 0.34 },
+  { word: "GERAKKAN.", sub: "ANIMASI PRESISI 60 FPS", accent: "#06b6d4", start: 0.34, end: 0.68 },
+  { word: "EKSPOR MP4.", sub: "SIAP TAYANG DI MANA SAJA", accent: "#ec4899", start: 0.68, end: 1.0 }
+];
+
+const active = scenes.find(s => progress >= s.start && progress <= s.end) || scenes[scenes.length - 1];
+const localP = (progress - active.start) / (active.end - active.start);
+
+const popIn = easeOutElastic(Math.min(localP * 2.5, 1));
+const fadeOut = localP > 0.82 ? 1 - ((localP - 0.82) / 0.18) : 1;
+
+ctx.save();
+ctx.translate(w / 2, h / 2);
+ctx.globalAlpha = Math.max(0, fadeOut);
+
+const circleRadius = Math.min(w, h) * 0.28 * popIn;
+const radGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, circleRadius);
+radGrad.addColorStop(0, active.accent + '55');
+radGrad.addColorStop(1, 'transparent');
+ctx.fillStyle = radGrad;
+ctx.beginPath();
+ctx.arc(0, 0, circleRadius, 0, Math.PI * 2);
+ctx.fill();
+
+const mainFontSize = Math.floor(Math.min(w, h) * 0.115);
+ctx.font = \`800 \${mainFontSize}px "Inter", sans-serif\`;
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+
+const scale = 0.75 + 0.25 * popIn;
+ctx.scale(scale, scale);
+
+if (localP < 0.2) {
+  const shift = (0.2 - localP) * 60;
+  ctx.fillStyle = 'rgba(236, 72, 153, 0.7)';
+  ctx.fillText(active.word, -shift, 0);
+  ctx.fillStyle = 'rgba(6, 182, 212, 0.7)';
+  ctx.fillText(active.word, shift, 0);
+}
+
+ctx.fillStyle = '#ffffff';
+ctx.fillText(active.word, 0, 0);
+
+const subY = mainFontSize * 0.95;
+const subFontSize = Math.max(16, Math.floor(mainFontSize * 0.22));
+ctx.font = \`600 \${subFontSize}px "JetBrains Mono", monospace\`;
+const badgeW = ctx.measureText(active.sub).width + 44;
+const badgeH = subFontSize * 2.1;
+
+ctx.fillStyle = active.accent;
+roundRect(ctx, -badgeW / 2, subY - badgeH / 2, badgeW, badgeH, 999);
+ctx.fill();
+
+ctx.fillStyle = '#ffffff';
+ctx.fillText(active.sub, 0, subY + 1);
+
+ctx.restore();`
+      },
+
+      uiCard: {
+        name: "animated_ui_card.js",
+        mode: "js",
+        code: `// PRESET: Animated Glassmorphism UI Analytics Card
+const bg = ctx.createLinearGradient(0, 0, w, h);
+bg.addColorStop(0, '#0f172a');
+bg.addColorStop(0.5, '#1e1b4b');
+bg.addColorStop(1, '#09090b');
+ctx.fillStyle = bg;
+ctx.fillRect(0, 0, w, h);
+
+const orb1X = w * 0.32 + Math.cos(t * 1.5) * 60;
+const orb1Y = h * 0.35 + Math.sin(t * 1.2) * 40;
+const g1 = ctx.createRadialGradient(orb1X, orb1Y, 10, orb1X, orb1Y, 280);
+g1.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
+g1.addColorStop(1, 'transparent');
+ctx.fillStyle = g1;
+ctx.fillRect(0, 0, w, h);
+
+const orb2X = w * 0.68 + Math.sin(t * 1.3) * 60;
+const orb2Y = h * 0.65 + Math.cos(t * 1.6) * 40;
+const g2 = ctx.createRadialGradient(orb2X, orb2Y, 10, orb2X, orb2Y, 300);
+g2.addColorStop(0, 'rgba(168, 85, 247, 0.45)');
+g2.addColorStop(1, 'transparent');
+ctx.fillStyle = g2;
+ctx.fillRect(0, 0, w, h);
+
+const cardEnter = easeOutCubic(Math.min(progress * 3, 1));
+const cardW = Math.min(w * 0.76, 780);
+const cardH = Math.min(h * 0.62, 460);
+const cardX = (w - cardW) / 2;
+const cardY = (h - cardH) / 2 + (1 - cardEnter) * 60;
+
+ctx.save();
+ctx.globalAlpha = cardEnter;
+
+ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+roundRect(ctx, cardX, cardY, cardW, cardH, 28);
+ctx.fill();
+
+ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+ctx.lineWidth = 2;
+ctx.stroke();
+
+const pad = cardW * 0.065;
+ctx.fillStyle = '#94a3b8';
+ctx.font = '600 18px "Inter", sans-serif';
+ctx.textAlign = 'left';
+ctx.fillText('PERTUMBUHAN PENDAPATAN BULANAN', cardX + pad, cardY + pad + 10);
+
+const statProgress = easeOutCubic(Math.min(Math.max((progress - 0.15) / 0.6, 0), 1));
+const revenue = Math.floor(148500 * statProgress).toLocaleString('id-ID');
+
+ctx.fillStyle = '#ffffff';
+ctx.font = \`800 \${Math.floor(cardW * 0.075)}px "Inter", sans-serif\`;
+ctx.fillText(\`Rp \${revenue} jt\`, cardX + pad, cardY + pad + 72);
+
+ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+roundRect(ctx, cardX + pad, cardY + pad + 92, 135, 34, 999);
+ctx.fill();
+ctx.fillStyle = '#34d399';
+ctx.font = '700 16px "JetBrains Mono", monospace';
+ctx.fillText('▲ +34.8% YoY', cardX + pad + 16, cardY + pad + 114);
+
+const bars = [0.35, 0.52, 0.44, 0.68, 0.61, 0.85, 1.0];
+const labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+const chartAreaY = cardY + cardH - pad - 35;
+const maxBarH = cardH * 0.36;
+const barSpacing = (cardW - pad * 2) / bars.length;
+const barW = barSpacing * 0.58;
+
+bars.forEach((val, i) => {
+  const delay = i * 0.05;
+  const barP = easeOutCubic(Math.min(Math.max((progress - 0.2 - delay) / 0.45, 0), 1));
+  const hBar = val * maxBarH * barP;
+  const bx = cardX + pad + i * barSpacing + (barSpacing - barW) / 2;
+  const by = chartAreaY - hBar;
+
+  const barGrad = ctx.createLinearGradient(0, by, 0, chartAreaY);
+  if (i === bars.length - 1) {
+    barGrad.addColorStop(0, '#38bdf8');
+    barGrad.addColorStop(1, '#6366f1');
+  } else {
+    barGrad.addColorStop(0, 'rgba(255,255,255,0.45)');
+    barGrad.addColorStop(1, 'rgba(255,255,255,0.12)');
+  }
+
+  ctx.fillStyle = barGrad;
+  roundRect(ctx, bx, by, barW, Math.max(hBar, 4), 10);
+  ctx.fill();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '500 15px "Inter", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(labels[i], bx + barW / 2, chartAreaY + 24);
+});
+
+ctx.restore();`
+      },
+
+      customHtml: {
+        name: "custom_scene.html",
+        mode: "html",
+        code: `<!-- PRESET 5: Custom HTML & CSS Motion -->
+<!-- Gunakan variabel CSS var(--progress) bernilai 0 s/d 1 untuk animasi -->
+<style>
+  .scene {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 30%, #1e1b4b, #09090b 75%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    overflow: hidden;
+    position: relative;
+  }
+  .ring {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    border: 3px dashed rgba(99, 102, 241, 0.45);
+    transform: rotate(calc(var(--progress) * 360deg)) scale(calc(0.8 + var(--progress) * 0.3));
+  }
+  .badge {
+    background: linear-gradient(90deg, #6366f1, #06b6d4);
+    padding: 10px 26px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    transform: translateY(calc((1 - min(var(--progress) * 3, 1)) * 40px));
+    opacity: min(var(--progress) * 3, 1);
+  }
+  .headline {
+    font-size: 76px;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.1;
+    background: linear-gradient(to right, #ffffff, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: scale(calc(0.85 + var(--progress) * 0.15));
+  }
+</style>
+
+<div class="scene">
+  <div class="ring"></div>
+  <div class="badge">HTML + CSS MOTION</div>
+  <div class="headline">Desain Web<br/>Jadi Video MP4</div>
+</div>`
+      }
+    };
+
+    // =========================================================================
+    // 2. STATE APLIKASI & KONFIGURASI STUDIO
+    // =========================================================================
+    const state = {
+      isPlaying: true,
+      currentPreset: 'auroraStars',
+      mode: 'js', // 'js' atau 'html'
+      width: 1920,
+      height: 1080,
+      duration: 5.0,
+      fps: 60,
+      speed: 1.0,
+      currentTime: 0,
+      lastTimestamp: null,
+      compiledFn: null,
+      isExporting: false,
+      params: {
+        auroraSpeed: 1.0,
+        starIntensity: 1.0,
+        title: '',
+        subtitle: '',
+        align: 'center'
+      }
+    };
+
+    // =========================================================================
+    // 3. REFERENSI DOM & HELPER EASING / GEOMETRI CANVAS
+    // =========================================================================
+    const codeEditor = document.getElementById('codeEditor');
+    const lineNumbers = document.getElementById('lineNumbers');
+    const timelineScrubber = document.getElementById('timelineScrubber');
+    const canvas = document.getElementById('previewCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const helpers = {
+      easeOutCubic: (x) => 1 - Math.pow(1 - Math.max(0, Math.min(1, x)), 3),
+      easeInOutCubic: (x) => {
+        const t = Math.max(0, Math.min(1, x));
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      },
+      easeOutElastic: (x) => {
+        const t = Math.max(0, Math.min(1, x));
+        if (t === 0 || t === 1) return t;
+        const c4 = (2 * Math.PI) / 3;
+        return Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+      },
+      easeOutBounce: (x) => {
+        let t = Math.max(0, Math.min(1, x));
+        const n1 = 7.5625;
+        const d1 = 2.75;
+        if (t < 1 / d1) return n1 * t * t;
+        if (t < 2 / d1) return n1 * (t -= 1.5 / d1) * t + 0.75;
+        if (t < 2.5 / d1) return n1 * (t -= 2.25 / d1) * t + 0.9375;
+        return n1 * (t -= 2.625 / d1) * t + 0.984375;
+      },
+      roundRect: (c, x, y, w, h, r) => {
+        const rad = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+        c.beginPath();
+        c.moveTo(x + rad, y);
+        c.arcTo(x + w, y, x + w, y + h, rad);
+        c.arcTo(x + w, y + h, x, y + h, rad);
+        c.arcTo(x, y + h, x, y, rad);
+        c.arcTo(x, y, x + w, y, rad);
+        c.closePath();
+      },
+      roundRectTop: (c, x, y, w, h, r) => {
+        const rad = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+        c.beginPath();
+        c.moveTo(x, y + h);
+        c.lineTo(x, y + rad);
+        c.arcTo(x, y, x + rad, y, rad);
+        c.lineTo(x + w - rad, y);
+        c.arcTo(x + w, y, x + w, y + rad, rad);
+        c.lineTo(x + w, y + h);
+        c.closePath();
+      }
+    };
+
+    // =========================================================================
+    // 4. INISIALISASI & KOMPILASI KODE EDITOR
+    // =========================================================================
+    function init() {
+      lucide.createIcons();
+      loadPreset('auroraStars');
+      updateCanvasDimensions();
+      window.addEventListener('resize', fitCanvasToViewport);
+      
+      // Event Listeners Editor
+      codeEditor.addEventListener('input', () => {
+        updateLineNumbers();
+        compileUserCode();
+      });
+      codeEditor.addEventListener('scroll', () => {
+        lineNumbers.scrollTop = codeEditor.scrollTop;
+      });
+      codeEditor.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = codeEditor.selectionStart;
+          const end = codeEditor.selectionEnd;
+          codeEditor.value = codeEditor.value.substring(0, start) + '  ' + codeEditor.value.substring(end);
+          codeEditor.selectionStart = codeEditor.selectionEnd = start + 2;
+          updateLineNumbers();
+        }
+      });
+
+      // Timeline Scrubber
+      timelineScrubber.addEventListener('input', (e) => {
+        const ratio = parseFloat(e.target.value) / 1000;
+        state.currentTime = ratio * state.duration;
+        renderFrameAtTime(state.currentTime);
+        updateTimelineUI();
+      });
+
+      // Keyboard Shortcut Spasi untuk Play/Pause (di luar textarea)
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && document.activeElement !== codeEditor && document.activeElement.tagName !== 'INPUT') {
+          e.preventDefault();
+          togglePlay();
+        }
+      });
+
+      // Mulai Loop Animasi
+      requestAnimationFrame(animationLoop);
+    }
+
+    function loadPreset(presetKey) {
+      const preset = PRESETS[presetKey];
+      if (!preset) return;
+
+      state.currentPreset = presetKey;
+      state.mode = preset.mode;
+      codeEditor.value = preset.code;
+      document.getElementById('editorFileName').innerHTML = `<i data-lucide="file-code" class="w-3.5 h-3.5 text-indigo-400"></i> ${preset.name}`;
+      document.getElementById('mobilePresetSelect').value = presetKey;
+
+      // Update style tombol preset aktif
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        if (btn.dataset.preset === presetKey) {
+          btn.className = 'preset-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow';
+        } else {
+          btn.className = 'preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5';
+        }
+      });
+
+      lucide.createIcons();
+      updateLineNumbers();
+      compileUserCode();
+      restartAnimation();
+    }
+
+    function loadAuroraCode() {
+      loadPreset('auroraStars');
+      showToast('Kode Aurora & Twinkling Stars dimuat ke editor!');
+    }
+
+    function updateMotionParams() {
+      const auroraSpeed = parseFloat(document.getElementById('auroraSpeedSlider').value) || 1.0;
+      const starIntensity = parseFloat(document.getElementById('starIntensitySlider').value) || 1.0;
+      const title = document.getElementById('overlayTitleInput').value.trim();
+      const subtitle = document.getElementById('overlaySubtitleInput').value.trim();
+      const align = document.getElementById('overlayAlignSelect').value;
+
+      state.params = { auroraSpeed, starIntensity, title, subtitle, align };
+
+      document.getElementById('auroraSpeedVal').textContent = `${auroraSpeed.toFixed(2)}x`;
+      document.getElementById('starIntensityVal').textContent = `${starIntensity.toFixed(2)}x`;
+
+      if (!state.isPlaying) {
+        renderFrameAtTime(state.currentTime);
+      }
+    }
+
+    function resetMotionParams() {
+      document.getElementById('auroraSpeedSlider').value = 1;
+      document.getElementById('starIntensitySlider').value = 1;
+      document.getElementById('overlayTitleInput').value = '';
+      document.getElementById('overlaySubtitleInput').value = '';
+      document.getElementById('overlayAlignSelect').value = 'center';
+      updateMotionParams();
+      showToast('Parameter visual direset ke default.');
+    }
+
+    function renderTextOverlay(progress, timeSec) {
+      const { title, subtitle, align } = state.params;
+      if (!title && !subtitle) return;
+
+      const enter = easeOutCubic(Math.min(progress * 3.5, 1));
+      const scaleFactor = Math.min(w_or_h(), 1920) / 1080;
+      const padX = Math.max(48, state.width * 0.06);
+      const padY = Math.max(48, state.height * 0.08);
+
+      let x = state.width / 2;
+      let y = state.height / 2;
+      let textAlign = 'center';
+
+      if (align === 'bottom-left') {
+        x = padX;
+        y = state.height - padY;
+        textAlign = 'left';
+      } else if (align === 'top-left') {
+        x = padX;
+        y = padY + 48 * scaleFactor;
+        textAlign = 'left';
+      }
+
+      ctx.save();
+      ctx.globalAlpha = enter;
+      ctx.textAlign = textAlign;
+      ctx.textBaseline = 'middle';
+
+      const yOffset = (1 - enter) * 24;
+      const titleSize = Math.max(28, Math.round(64 * scaleFactor));
+      const subSize = Math.max(16, Math.round(26 * scaleFactor));
+
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+      ctx.shadowBlur = 24;
+
+      if (title && subtitle) {
+        const titleY = align === 'bottom-left' ? y - subSize * 1.45 + yOffset : y - subSize * 0.65 + yOffset;
+        const subY = align === 'bottom-left' ? y + yOffset : y + titleSize * 0.75 + yOffset;
+
+        ctx.font = `800 ${titleSize}px "Inter", sans-serif`;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(title, x, titleY);
+
+        ctx.font = `500 ${subSize}px "Inter", sans-serif`;
+        ctx.fillStyle = 'rgba(224, 242, 254, 0.88)';
+        ctx.fillText(subtitle, x, subY);
+      } else if (title) {
+        ctx.font = `800 ${titleSize}px "Inter", sans-serif`;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(title, x, y + yOffset);
+      } else if (subtitle) {
+        ctx.font = `600 ${subSize}px "Inter", sans-serif`;
+        ctx.fillStyle = '#e0f2fe';
+        ctx.fillText(subtitle, x, y + yOffset);
+      }
+
+      ctx.restore();
+    }
+
+    function w_or_h() {
+      return Math.min(state.width, state.height);
+    }
+
+    function updateLineNumbers() {
+      const lines = codeEditor.value.split('\n').length;
+      lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join('<br>');
+    }
+
+    function compileUserCode() {
+      const rawCode = codeEditor.value.trim();
+      const errorConsole = document.getElementById('errorConsole');
+      const errorText = document.getElementById('errorText');
+      const compileStatus = document.getElementById('compileStatus');
+
+      // Deteksi otomatis apakah mode HTML/CSS atau JS Canvas
+      if (rawCode.startsWith('<')) {
+        state.mode = 'html';
+        errorConsole.classList.add('hidden');
+        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Mode HTML/CSS`;
+        compileStatus.className = 'text-[11px] text-cyan-300 flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-500/10';
+        if (!state.isPlaying) renderFrameAtTime(state.currentTime);
+        return;
+      }
+
+      state.mode = 'js';
+      try {
+        // Buat fungsi terisolasi dengan variabel native ctx, w, h, t, progress (+ alias & params)
+        const fn = new Function(
+          'ctx', 'w', 'h', 't', 'progress',
+          'width', 'height', 'time', 'frame', 'params',
+          'easeOutCubic', 'easeInOutCubic', 'easeOutElastic', 'easeOutBounce',
+          'roundRect', 'roundRectTop',
+          rawCode
+        );
+        state.compiledFn = fn;
+        errorConsole.classList.add('hidden');
+        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Aktif`;
+        compileStatus.className = 'text-[11px] text-emerald-400 flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10';
+        
+        if (!state.isPlaying) renderFrameAtTime(state.currentTime);
+      } catch (err) {
+        errorText.textContent = `Syntax Error: ${err.message}`;
+        errorConsole.classList.remove('hidden');
+        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Error`;
+        compileStatus.className = 'text-[11px] text-rose-400 flex items-center gap-1 px-2 py-0.5 rounded bg-rose-500/10';
+      }
+    }
+
+    function applyAndRestart() {
+      compileUserCode();
+      restartAnimation();
+      showToast('Script berhasil diterapkan ke kanvas!');
+    }
+
+    // =========================================================================
+    // 5. PENGATURAN RESOLUSI, DURASI & FIT VIEWPORT
+    // =========================================================================
+    function updateSettings() {
+      const [w, h] = document.getElementById('resSelect').value.split('x').map(Number);
+      state.width = w;
+      state.height = h;
+      state.duration = Math.max(1, Math.min(30, parseFloat(document.getElementById('durationInput').value) || 5));
+      state.fps = parseInt(document.getElementById('fpsSelect').value, 10);
+      state.speed = parseFloat(document.getElementById('speedSelect').value);
+
+      if (state.currentTime > state.duration) state.currentTime = 0;
+
+      // Update label UI
+      document.getElementById('badgeResolution').textContent = `${w} × ${h}`;
+      const aspectLabel = w === h ? '1:1 Square' : (w > h ? '16:9 Landscape' : '9:16 Reels/TikTok');
+      document.getElementById('badgeAspect').textContent = aspectLabel;
+
+      updateCanvasDimensions();
+      updateTimelineUI();
+      renderFrameAtTime(state.currentTime);
+    }
+
+    function updateCanvasDimensions() {
+      canvas.width = state.width;
+      canvas.height = state.height;
+      fitCanvasToViewport();
+    }
+
+    function fitCanvasToViewport() {
+      const container = document.getElementById('viewportContainer');
+      const wrapper = document.getElementById('canvasFrameWrapper');
+      if (!container || !wrapper) return;
+
+      const availW = container.clientWidth - 32;
+      const availH = container.clientHeight - 32;
+      const scale = Math.min(availW / state.width, availH / state.height, 1);
+
+      wrapper.style.width = `${Math.floor(state.width * scale)}px`;
+      wrapper.style.height = `${Math.floor(state.height * scale)}px`;
+      document.getElementById('zoomLevelText').textContent = `Zoom ${Math.round(scale * 100)}%`;
+    }
+
+    // =========================================================================
+    // 6. ENGINE RENDERING FRAME (JS CANVAS & HTML SVG FOREIGNOBJECT)
+    // =========================================================================
+    function renderFrameAtTime(timeSec) {
+      const progress = Math.min(Math.max(timeSec / state.duration, 0), 1);
+      const frameIndex = Math.floor(timeSec * state.fps);
+
+      if (state.mode === 'js') {
+        if (!state.compiledFn) return;
+        try {
+          ctx.save();
+          state.compiledFn(
+            ctx, state.width, state.height, timeSec, progress,
+            state.width, state.height, timeSec, frameIndex, state.params,
+            helpers.easeOutCubic, helpers.easeInOutCubic, helpers.easeOutElastic, helpers.easeOutBounce,
+            helpers.roundRect, helpers.roundRectTop
+          );
+          ctx.restore();
+          renderTextOverlay(progress, timeSec);
+        } catch (runtimeErr) {
+          ctx.restore();
+          const errorConsole = document.getElementById('errorConsole');
+          document.getElementById('errorText').textContent = `Runtime Error: ${runtimeErr.message}`;
+          errorConsole.classList.remove('hidden');
+        }
+      } else if (state.mode === 'html') {
+        renderHtmlToCanvas(progress);
+      }
+    }
+
+    function renderHtmlToCanvas(progress) {
+      const htmlContent = codeEditor.value;
+      const svgMarkup = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${state.width}" height="${state.height}">
+          <foreignObject width="100%" height="100%">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="width:${state.width}px;height:${state.height}px;--progress:${progress.toFixed(4)};">
+              ${htmlContent}
+            </div>
+          </foreignObject>
+        </svg>
+      `;
+
+      const img = new Image();
+      const svgBlob = new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = () => {
+        ctx.clearRect(0, 0, state.width, state.height);
+        ctx.drawImage(img, 0, 0, state.width, state.height);
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
+
+    // Versi Promise untuk ekspor offline mode HTML
+    function renderHtmlToCanvasAsync(progress) {
+      return new Promise((resolve) => {
+        const htmlContent = codeEditor.value;
+        const svgMarkup = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="${state.width}" height="${state.height}">
+            <foreignObject width="100%" height="100%">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="width:${state.width}px;height:${state.height}px;--progress:${progress.toFixed(4)};">
+                ${htmlContent}
+              </div>
+            </foreignObject>
+          </svg>
+        `;
+        const img = new Image();
+        const svgBlob = new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        img.onload = () => {
+          ctx.clearRect(0, 0, state.width, state.height);
+          ctx.drawImage(img, 0, 0, state.width, state.height);
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+        img.src = url;
+      });
+    }
+
+    // =========================================================================
+    // 7. ANIMATION PLAYBACK LOOP & TIMELINE CONTROLS
+    // =========================================================================
+    function animationLoop(timestamp) {
+      if (!state.lastTimestamp) state.lastTimestamp = timestamp;
+      const deltaSec = (timestamp - state.lastTimestamp) / 1000;
+      state.lastTimestamp = timestamp;
+
+      if (state.isPlaying && !state.isExporting) {
+        state.currentTime += deltaSec * state.speed;
+
+        if (state.currentTime >= state.duration) {
+          const isLoop = document.getElementById('loopToggle').checked;
+          if (isLoop) {
+            state.currentTime = state.currentTime % state.duration;
+          } else {
+            state.currentTime = state.duration;
+            state.isPlaying = false;
+            updatePlayButtonUI();
+          }
+        }
+
+        renderFrameAtTime(state.currentTime);
+        updateTimelineUI();
+      }
+
+      requestAnimationFrame(animationLoop);
+    }
+
+    function updateTimelineUI() {
+      const ratio = Math.min(Math.max(state.currentTime / state.duration, 0), 1);
+      timelineScrubber.value = Math.round(ratio * 1000);
+      timelineProgressFill.style.width = `${ratio * 100}%`;
+
+      document.getElementById('currentTimeLabel').textContent = formatTime(state.currentTime);
+      document.getElementById('totalTimeLabel').textContent = formatTime(state.duration);
+
+      const currentFrame = Math.floor(state.currentTime * state.fps);
+      const totalFrames = Math.floor(state.duration * state.fps);
+      document.getElementById('frameCounter').textContent = currentFrame;
+      document.getElementById('totalFramesLabel').textContent = totalFrames;
+    }
+
+    function formatTime(sec) {
+      const mins = Math.floor(sec / 60);
+      const secs = Math.floor(sec % 60);
+      const tenths = Math.floor((sec % 1) * 10);
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${tenths}`;
+    }
+
+    function togglePlay() {
+      if (state.currentTime >= state.duration && !state.isPlaying) {
+        state.currentTime = 0;
+      }
+      state.isPlaying = !state.isPlaying;
+      state.lastTimestamp = performance.now();
+      updatePlayButtonUI();
+    }
+
+    function updatePlayButtonUI() {
+      const icon = document.getElementById('playPauseIcon');
+      const text = document.getElementById('playPauseText');
+      if (state.isPlaying) {
+        icon.setAttribute('data-lucide', 'pause');
+        text.textContent = 'Jeda';
+      } else {
+        icon.setAttribute('data-lucide', 'play');
+        text.textContent = 'Putar';
+      }
+      lucide.createIcons();
+    }
+
+    function restartAnimation() {
+      state.currentTime = 0;
+      state.lastTimestamp = performance.now();
+      renderFrameAtTime(0);
+      updateTimelineUI();
+    }
+
+    function stepFrame(direction) {
+      state.isPlaying = false;
+      updatePlayButtonUI();
+      const frameDur = 1 / state.fps;
+      state.currentTime = Math.min(Math.max(state.currentTime + direction * frameDur, 0), state.duration);
+      renderFrameAtTime(state.currentTime);
+      updateTimelineUI();
+    }
+
+    // =========================================================================
+    // 8. EKSPOR MP4 FRAME-BY-FRAME (WEBCODECS + MP4-MUXER + FALLBACK)
+    // =========================================================================
+    function openExportModal() {
+      state.isPlaying = false;
+      updatePlayButtonUI();
+
+      const totalFrames = Math.ceil(state.duration * state.fps);
+      document.getElementById('exportSpecRes').textContent = `${state.width} × ${state.height} px`;
+      document.getElementById('exportSpecDur').textContent = `${state.duration.toFixed(1)} dtk @ ${state.fps} FPS`;
+      document.getElementById('exportSpecFrames').textContent = `${totalFrames} Frames`;
+
+      const hasWebCodecs = typeof VideoEncoder !== 'undefined' && typeof Mp4Muxer !== 'undefined';
+      document.getElementById('exportSpecCodec').textContent = hasWebCodecs
+        ? 'H.264 MP4 (WebCodecs Hardware)'
+        : 'WebM/MP4 (MediaRecorder)';
+
+      // Reset tampilan modal
+      document.getElementById('exportOptionsSection').classList.remove('hidden');
+      document.getElementById('exportActionButtons').classList.remove('hidden');
+      document.getElementById('renderProgressBox').classList.add('hidden');
+      document.getElementById('renderCompleteBox').classList.add('hidden');
+
+      const modal = document.getElementById('exportModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeExportModal() {
+      if (state.isExporting) return;
+      const modal = document.getElementById('exportModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function startVideoExport() {
+      if (state.isExporting) return;
+      state.isExporting = true;
+
+      // UI Progress State
+      document.getElementById('exportOptionsSection').classList.add('hidden');
+      document.getElementById('exportActionButtons').classList.add('hidden');
+      document.getElementById('closeExportBtn').classList.add('hidden');
+      document.getElementById('renderProgressBox').classList.remove('hidden');
+
+      const bitrate = parseInt(document.getElementById('bitrateSelect').value, 10);
+      const hasWebCodecs = typeof VideoEncoder !== 'undefined' && typeof Mp4Muxer !== 'undefined';
+
+      try {
+        if (hasWebCodecs) {
+          await exportWithWebCodecsMP4(bitrate);
+        } else {
+          await exportWithMediaRecorderFallback(bitrate);
+        }
+      } catch (err) {
+        console.warn('WebCodecs gagal, beralih ke MediaRecorder fallback:', err);
+        await exportWithMediaRecorderFallback(bitrate);
+      } finally {
+        state.isExporting = false;
+        document.getElementById('closeExportBtn').classList.remove('hidden');
+      }
+    }
+
+    // METODE UTAMA: Offline Frame-by-Frame Rendering ke MP4 asli (H.264)
+    async function exportWithWebCodecsMP4(bitrate) {
+      const width = state.width;
+      const height = state.height;
+      const fps = state.fps;
+      const totalFrames = Math.ceil(state.duration * fps);
+
+      // Inisialisasi MP4 Muxer
+      const muxer = new Mp4Muxer.Muxer({
+        target: new Mp4Muxer.ArrayBufferTarget(),
+        video: {
+          codec: 'avc',
+          width: width,
+          height: height
+        },
+        fastStart: 'in-memory'
+      });
+
+      const videoEncoder = new VideoEncoder({
+        output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+        error: (e) => { throw e; }
+      });
+
+      // Pilih profil AVC yang mendukung resolusi hingga 1080p/4K
+      const codecString = width * height > 1280 * 720 ? 'avc1.640028' : 'avc1.4d002a';
+      videoEncoder.configure({
+        codec: codecString,
+        width: width,
+        height: height,
+        bitrate: bitrate,
+        framerate: fps
+      });
+
+      const startTime = performance.now();
+
+      for (let i = 0; i < totalFrames; i++) {
+        const simTime = (i / fps);
+        const progress = Math.min(simTime / state.duration, 1);
+
+        // Render frame akurat ke canvas
+        if (state.mode === 'html') {
+          await renderHtmlToCanvasAsync(progress);
+        } else {
+          renderFrameAtTime(simTime);
+        }
+
+        // Tangkap frame sebagai VideoFrame WebCodecs
+        const timestampMicros = Math.round((i / fps) * 1_000_000);
+        const durationMicros = Math.round((1 / fps) * 1_000_000);
+        const frame = new VideoFrame(canvas, {
+          timestamp: timestampMicros,
+          duration: durationMicros
+        });
+
+        const keyFrame = i % (fps * 2) === 0;
+        videoEncoder.encode(frame, { keyFrame });
+        frame.close();
+
+        // Update progress bar setiap beberapa frame agar UI tetap responsif
+        if (i % 3 === 0 || i === totalFrames - 1) {
+          const pct = Math.round(((i + 1) / totalFrames) * 100);
+          const elapsed = (performance.now() - startTime) / 1000;
+          const eta = i > 0 ? Math.max(0, (elapsed / (i + 1)) * (totalFrames - i - 1)).toFixed(1) : '...';
+
+          document.getElementById('renderProgressBar').style.width = `${pct}%`;
+          document.getElementById('renderPercentLabel').textContent = `${pct}%`;
+          document.getElementById('renderFrameDetail').textContent = `Frame ${i + 1} / ${totalFrames}`;
+          document.getElementById('renderEtaLabel').textContent = `Sisa waktu: ~${eta} dtk`;
+
+          // Beri jeda microtask agar browser dapat me-repaint UI
+          await new Promise(r => setTimeout(r, 0));
+        }
+      }
+
+      document.getElementById('renderStatusLabel').textContent = 'Membungkus kontainer MP4...';
+      await videoEncoder.flush();
+      muxer.finalize();
+
+      const { buffer } = muxer.target;
+      const blob = new Blob([buffer], { type: 'video/mp4' });
+      finishExportUI(blob, 'mp4');
+    }
+
+    // METODE FALLBACK: Jika browser lama tidak mendukung WebCodecs
+    async function exportWithMediaRecorderFallback(bitrate) {
+      const fps = state.fps;
+      const totalFrames = Math.ceil(state.duration * fps);
+      const stream = canvas.captureStream(fps);
+      const mimeType = MediaRecorder.isTypeSupported('video/mp4') ? 'video/mp4' : 'video/webm;codecs=vp9';
+      const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: bitrate });
+      const chunks = [];
+
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+
+      const donePromise = new Promise(resolve => {
+        recorder.onstop = () => resolve(new Blob(chunks, { type: mimeType }));
+      });
+
+      recorder.start();
+
+      for (let i = 0; i < totalFrames; i++) {
+        const simTime = i / fps;
+        renderFrameAtTime(simTime);
+
+        const pct = Math.round(((i + 1) / totalFrames) * 100);
+        document.getElementById('renderProgressBar').style.width = `${pct}%`;
+        document.getElementById('renderPercentLabel').textContent = `${pct}%`;
+        document.getElementById('renderFrameDetail').textContent = `Frame ${i + 1} / ${totalFrames}`;
+
+        await new Promise(r => setTimeout(r, 1000 / fps));
+      }
+
+      recorder.stop();
+      const blob = await donePromise;
+      const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+      finishExportUI(blob, ext);
+    }
+
+    function finishExportUI(blob, ext) {
+      const url = URL.createObjectURL(blob);
+      const sizeMB = (blob.size / (1024 * 1024)).toFixed(2);
+      const fileName = `codemotion_${state.currentPreset}_${state.width}x${state.height}.${ext}`;
+
+      const dlLink = document.getElementById('downloadVideoLink');
+      dlLink.href = url;
+      dlLink.download = fileName;
+      dlLink.querySelector('span').textContent = `Unduh Video (.${ext.toUpperCase()})`;
+
+      document.getElementById('renderedFileSize').textContent = `${fileName} (${sizeMB} MB)`;
+      document.getElementById('renderProgressBox').classList.add('hidden');
+      document.getElementById('renderCompleteBox').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // =========================================================================
+    // 9. UTILITAS UI (CLIPBOARD, MODALS, TOAST)
+    // =========================================================================
+    function copyEditorCode() {
+      codeEditor.select();
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      showToast('Kode berhasil disalin ke clipboard!');
+    }
+
+    function showApiDocsModal() {
+      const modal = document.getElementById('apiDocsModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeApiDocsModal() {
+      const modal = document.getElementById('apiDocsModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2800);
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
