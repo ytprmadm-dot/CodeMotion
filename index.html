@@ -124,37 +124,44 @@
     <!-- Preset Selector Bar (Desktop) -->
     <div class="hidden lg:flex items-center gap-1.5 bg-studio-surface p-1 rounded-xl border border-studio-border">
       <button onclick="loadPreset('auroraStars')" data-preset="auroraStars" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Aurora & Stars Canvas
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Aurora
       </button>
-      <button onclick="loadPreset('typingCode')" data-preset="typingCode" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Typing Code
+      <button onclick="loadPreset('neonWave')" data-preset="neonWave" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="waves" class="w-3.5 h-3.5"></i> Neon Wave
+      </button>
+      <button onclick="loadPreset('particleTunnel')" data-preset="particleTunnel" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="orbit" class="w-3.5 h-3.5"></i> Warp Tunnel
+      </button>
+      <button onclick="loadPreset('audioSpectrum')" data-preset="audioSpectrum" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="audio-waveform" class="w-3.5 h-3.5"></i> Spectrum
       </button>
       <button onclick="loadPreset('kineticType')" data-preset="kineticType" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="type" class="w-3.5 h-3.5"></i> Kinetic Typography
+        <i data-lucide="type" class="w-3.5 h-3.5"></i> Kinetic Text
       </button>
-      <button onclick="loadPreset('uiCard')" data-preset="uiCard" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="layers" class="w-3.5 h-3.5"></i> Animated UI Card
-      </button>
-      <button onclick="loadPreset('customHtml')" data-preset="customHtml" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
-        <i data-lucide="code-2" class="w-3.5 h-3.5"></i> Custom HTML/CSS
+      <button onclick="loadPreset('universalSnippet')" data-preset="universalSnippet" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="braces" class="w-3.5 h-3.5"></i> Kode Teks
       </button>
     </div>
 
     <!-- Action Buttons -->
     <div class="flex items-center gap-2">
-      <!-- Tombol Cepat Muat Kode Aurora -->
-      <button onclick="loadAuroraCode()" title="Muat Ulang Preset Aurora & Twinkling Stars" class="px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95">
-        <i data-lucide="moon-star" class="w-3.5 h-3.5"></i>
-        <span class="hidden sm:inline">Muat Kode Aurora</span>
+      <!-- Tombol Paste & Auto-Motion -->
+      <button onclick="pasteAndRunCode()" title="Tempel kode dari clipboard dan langsung ubah jadi motion" class="px-3 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95">
+        <i data-lucide="clipboard-paste" class="w-3.5 h-3.5"></i>
+        <span class="hidden sm:inline">Tempel Kode Baru</span>
       </button>
 
-      <!-- Mobile Preset Dropdown -->
-      <select id="mobilePresetSelect" onchange="loadPreset(this.value)" class="lg:hidden bg-studio-surface border border-studio-border text-xs rounded-lg px-2.5 py-2 text-zinc-200 focus:outline-none focus:border-indigo-500">
-        <option value="auroraStars">Aurora & Stars Canvas</option>
-        <option value="typingCode">Typing Code Effect</option>
-        <option value="kineticType">Kinetic Typography</option>
-        <option value="uiCard">Animated UI Card</option>
-        <option value="customHtml">Custom HTML/CSS Canvas</option>
+      <!-- Mobile / Semua Preset Dropdown -->
+      <select id="mobilePresetSelect" onchange="loadPreset(this.value)" title="Pilih Template Visual" class="bg-studio-surface border border-studio-border text-xs rounded-xl px-2.5 py-2 text-zinc-200 focus:outline-none focus:border-indigo-500">
+        <option value="auroraStars">Preset: Aurora & Stars</option>
+        <option value="neonWave">Preset: Neon Wave Matrix</option>
+        <option value="particleTunnel">Preset: Cyberpunk Warp Tunnel</option>
+        <option value="audioSpectrum">Preset: 3D Audio Spectrum</option>
+        <option value="kaleidoscope">Preset: Geometric Kaleidoscope</option>
+        <option value="kineticType">Preset: Kinetic Typography</option>
+        <option value="uiCard">Preset: Animated UI Card</option>
+        <option value="universalSnippet">Preset: Auto-Animate Kode Apapun</option>
+        <option value="customHtml">Preset: Custom HTML/CSS</option>
       </select>
 
       <button onclick="openExportModal()" id="btnOpenExport" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-indigo-600/25 flex items-center gap-2 transition-all active:scale-95">
@@ -172,22 +179,29 @@
       
       <!-- Editor Toolbar -->
       <div class="h-10 px-3 bg-studio-surface/70 border-b border-studio-border flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-2">
-          <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="flex items-center gap-1.5 shrink-0">
             <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
             <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
           </div>
-          <span id="editorFileName" class="text-xs font-mono text-zinc-300 ml-2 flex items-center gap-1.5">
-            <i data-lucide="file-code" class="w-3.5 h-3.5 text-indigo-400"></i>
-            motion_scene.js
+          <span id="editorFileName" class="text-xs font-mono text-zinc-300 ml-2 flex items-center gap-1.5 truncate">
+            <i data-lucide="file-code" class="w-3.5 h-3.5 text-indigo-400 shrink-0"></i>
+            untitled_script.js
           </span>
         </div>
 
-        <div class="flex items-center gap-1.5">
-          <span id="compileStatus" class="text-[11px] text-emerald-400 flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10">
+        <div class="flex items-center gap-1 shrink-0">
+          <span id="compileStatus" class="hidden sm:flex text-[11px] text-emerald-400 items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Siap
           </span>
+          <input type="file" id="uploadCodeFileInput" accept=".js,.ts,.html,.css,.py,.txt,.svg" class="hidden" onchange="handleCodeFileUpload(event)" />
+          <button onclick="document.getElementById('uploadCodeFileInput').click()" title="Buka File Kode dari Komputer" class="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+            <i data-lucide="folder-open" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="clearEditorCode()" title="Kosongkan Editor untuk Kode Baru" class="p-1.5 text-zinc-400 hover:text-rose-400 hover:bg-zinc-800 rounded-lg transition-colors">
+            <i data-lucide="eraser" class="w-3.5 h-3.5"></i>
+          </button>
           <button onclick="copyEditorCode()" title="Salin Kode" class="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
           </button>
@@ -197,10 +211,38 @@
         </div>
       </div>
 
+      <!-- Bar Koleksi Script Tersimpan (Gonta-ganti berbagai kode) -->
+      <div class="px-3 py-1.5 bg-[#0e0e13] border-b border-studio-border flex items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-1.5 flex-1 min-w-0">
+          <i data-lucide="bookmark" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+          <select id="savedScriptsSelect" onchange="loadSavedScript(this.value)" class="flex-1 min-w-0 bg-studio-surface border border-studio-border rounded-lg px-2 py-1 text-[11px] text-zinc-200 focus:outline-none focus:border-indigo-500">
+            <option value="">-- Koleksi Kode Tersimpan (0) --</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button onclick="openSaveScriptModal()" title="Simpan kode saat ini ke koleksi" class="px-2 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/35 border border-indigo-500/30 text-indigo-300 text-[11px] font-medium flex items-center gap-1 transition-colors">
+            <i data-lucide="save" class="w-3 h-3"></i> Simpan
+          </button>
+          <button onclick="deleteCurrentSavedScript()" id="btnDeleteSaved" title="Hapus kode tersimpan ini" class="hidden p-1 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 transition-colors">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
       <!-- Mode Helper Banner -->
-      <div id="modeHelperBanner" class="px-3 py-1.5 bg-indigo-950/40 border-b border-indigo-500/20 text-[11px] text-indigo-200/90 flex items-center justify-between">
-        <span id="modeHelperText">Variabel native Canvas 2D: <code class="text-cyan-300 font-mono">ctx, w, h, t, progress</code> (serta alias <code class="text-zinc-300 font-mono">width, height, time, frame</code>).</span>
-        <button onclick="showApiDocsModal()" class="text-cyan-400 hover:underline font-medium shrink-0 ml-2">Panduan API</button>
+      <div id="modeHelperBanner" class="px-3 py-1.5 bg-indigo-950/40 border-b border-indigo-500/20 text-[11px] text-indigo-200/90 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 overflow-hidden">
+          <span id="modeHelperText" class="truncate">Universal Engine: Tempel kode Canvas 2D, HTML/CSS, SVG, atau kode program apapun.</span>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <select id="renderModeOverride" onchange="onRenderModeOverrideChange()" title="Pilih cara kode dirender" class="bg-studio-panel border border-indigo-500/30 rounded px-1.5 py-0.5 text-[10px] text-cyan-300 focus:outline-none">
+            <option value="auto" selected>Mode: Deteksi Otomatis</option>
+            <option value="canvas">Mode: Visual Canvas JS</option>
+            <option value="html">Mode: HTML / CSS / SVG</option>
+            <option value="showcase">Mode: Animasi Ketik Kode</option>
+          </select>
+          <button onclick="showApiDocsModal()" class="text-cyan-400 hover:underline font-medium">Panduan</button>
+        </div>
       </div>
 
       <!-- Panel Parameter Interaktif Opsional (Aurora, Bintang & Overlay Teks) -->
@@ -544,6 +586,29 @@
     </div>
   </div>
 
+  <!-- MODAL SIMPAN KODE KE KOLEKSI -->
+  <div id="saveScriptModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-studio-panel border border-studio-border rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="bookmark-plus" class="w-4 h-4 text-indigo-400"></i>
+          Simpan Kode ke Koleksi
+        </h3>
+        <button onclick="closeSaveScriptModal()" class="text-zinc-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div>
+        <label class="block text-xs text-zinc-400 mb-1.5">Nama Visual / Script</label>
+        <input id="saveScriptNameInput" type="text" placeholder="Contoh: Aurora Hijau Malam" class="w-full bg-studio-surface border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+      </div>
+      <div class="flex justify-end gap-2">
+        <button onclick="closeSaveScriptModal()" class="px-3.5 py-2 rounded-xl bg-studio-surface hover:bg-zinc-800 text-xs text-zinc-300">Batal</button>
+        <button onclick="confirmSaveScript()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">Simpan Kode</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
   <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-studio-surface border border-studio-border text-white px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-medium pointer-events-none">
     <i data-lucide="info" class="w-4 h-4 text-indigo-400"></i>
@@ -552,401 +617,67 @@
 
   <script>
     // =========================================================================
-    // 1. PRESET TEMPLATE ANIMASI SIAP PAKAI
+    // 1. PRESET TEMPLATE ANIMASI SIAP PAKAI (KOSONG / TANPA DEMO BAWAAN)
     // =========================================================================
     const PRESETS = {
       auroraStars: {
-        name: "aurora_twinkling_stars.js",
+        name: "untitled_script.js",
         mode: "js",
-        code: `ctx.globalCompositeOperation = "source-over";
-ctx.fillStyle = "#040814";
-ctx.fillRect(0, 0, w, h);
-ctx.globalCompositeOperation = "screen";
+        code: ""
+      },
 
-const auroraTime = t * params.auroraSpeed;
-const auroraBands = [
-  { x: 0.22, y: 0.30, r: 0.45, color: "16, 185, 129", speed: 0.45, phase: 0.4 },
-  { x: 0.58, y: 0.42, r: 0.52, color: "34, 211, 238", speed: 0.36, phase: 1.9 },
-  { x: 0.78, y: 0.26, r: 0.40, color: "139, 92, 246", speed: 0.52, phase: 3.7 }
-];
+      neonWave: {
+        name: "neon_wave.js",
+        mode: "js",
+        code: ""
+      },
 
-for (const b of auroraBands) {
-  const cx = (b.x + Math.cos(auroraTime * b.speed + b.phase) * 0.18) * w;
-  const cy = (b.y + Math.sin(auroraTime * b.speed * 0.75 + b.phase) * 0.12) * h;
-  const radius = b.r * Math.max(w, h) * (0.92 + 0.14 * Math.cos(auroraTime * 1.1 + b.phase));
+      particleTunnel: {
+        name: "warp_tunnel.js",
+        mode: "js",
+        code: ""
+      },
 
-  const grad = ctx.createRadialGradient(cx, cy, radius * 0.04, cx, cy, radius);
-  grad.addColorStop(0, \`rgba(\${b.color}, 0.48)\`);
-  grad.addColorStop(0.55, \`rgba(\${b.color}, 0.16)\`);
-  grad.addColorStop(1, \`rgba(\${b.color}, 0)\`);
+      audioSpectrum: {
+        name: "spectrum.js",
+        mode: "js",
+        code: ""
+      },
 
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-  ctx.fill();
-}
+      kaleidoscope: {
+        name: "kaleidoscope.js",
+        mode: "js",
+        code: ""
+      },
 
-const scale = Math.min(w, h) / 1080;
-const starCount = Math.min(140, Math.max(0, Math.round(36 * params.starIntensity)));
-for (let i = 0; i < starCount; i++) {
-  const sx = (((i * 211 + t * 22) % (w + 120)) - 60);
-  const sy = (((i * 149 + Math.sin(t * 0.8 + i) * 35 + h * 2) % (h + 120)) - 60);
-  const sr = (2 + (i % 4) * 1.8) * scale;
-  const twinkle = Math.min(1, (0.15 + 0.55 * (0.5 + 0.5 * Math.sin(t * 3.2 + i * 1.3))) * Math.max(0.2, params.starIntensity));
-
-  ctx.fillStyle = \`rgba(224, 242, 254, \${twinkle})\`;
-  ctx.beginPath();
-  ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-ctx.globalCompositeOperation = "source-over";`
+      universalSnippet: {
+        name: "snippet.txt",
+        mode: "showcase",
+        code: ""
       },
 
       typingCode: {
-        name: "typing_code_effect.js",
+        name: "typing_script.js",
         mode: "js",
-        code: `// PRESET: Typing Code Effect (Terminal macOS Modern)
-const bgGrad = ctx.createLinearGradient(0, 0, w, h);
-bgGrad.addColorStop(0, '#090d16');
-bgGrad.addColorStop(1, '#111827');
-ctx.fillStyle = bgGrad;
-ctx.fillRect(0, 0, w, h);
-
-const glow = ctx.createRadialGradient(w*0.5, h*0.5, 40, w*0.5, h*0.5, w*0.45);
-glow.addColorStop(0, 'rgba(99, 102, 241, 0.22)');
-glow.addColorStop(1, 'rgba(99, 102, 241, 0)');
-ctx.fillStyle = glow;
-ctx.fillRect(0, 0, w, h);
-
-const enter = easeOutCubic(Math.min(progress * 4, 1));
-const winW = Math.min(w * 0.82, 1180);
-const winH = Math.min(h * 0.68, 660);
-const winX = (w - winW) / 2;
-const winY = (h - winH) / 2 + (1 - enter) * 40;
-
-ctx.save();
-ctx.globalAlpha = enter;
-
-ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
-ctx.shadowBlur = 50;
-ctx.shadowOffsetY = 25;
-ctx.fillStyle = '#0f111a';
-roundRect(ctx, winX, winY, winW, winH, 22);
-ctx.fill();
-ctx.shadowBlur = 0;
-ctx.shadowOffsetY = 0;
-
-ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-ctx.lineWidth = 2;
-ctx.stroke();
-
-ctx.fillStyle = '#181b28';
-roundRectTop(ctx, winX, winY, winW, 54, 22);
-ctx.fill();
-
-const dots = ['#ff5f56', '#ffbd2e', '#27c93f'];
-dots.forEach((color, idx) => {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.arc(winX + 32 + idx * 24, winY + 27, 7.5, 0, Math.PI * 2);
-  ctx.fill();
-});
-
-ctx.fillStyle = '#94a3b8';
-ctx.font = '600 18px "JetBrains Mono", monospace';
-ctx.textAlign = 'center';
-ctx.fillText('deploy_ai_agent.ts', winX + winW / 2, winY + 33);
-
-const codeLines = [
-  [{ t: 'import', c: '#c792ea' }, { t: ' { createAgent } ', c: '#e2e8f0' }, { t: 'from', c: '#c792ea' }, { t: " '@studio/core'", c: '#a5d6ff' }],
-  [{ t: '', c: '#fff' }],
-  [{ t: 'const', c: '#c792ea' }, { t: ' motionAgent = ', c: '#e2e8f0' }, { t: 'await', c: '#89ddff' }, { t: ' createAgent({', c: '#82aaff' }],
-  [{ t: '  model: ', c: '#e2e8f0' }, { t: '"gemini-3-pro-vision"', c: '#c3e88d' }, { t: ',', c: '#89ddff' }],
-  [{ t: '  fps: ', c: '#e2e8f0' }, { t: '60', c: '#f78c6c' }, { t: ',', c: '#89ddff' }],
-  [{ t: '  resolution: ', c: '#e2e8f0' }, { t: '"1080p_HD"', c: '#c3e88d' }, { t: ',', c: '#89ddff' }],
-  [{ t: '  renderMode: ', c: '#e2e8f0' }, { t: '"hardware_mp4"', c: '#c3e88d' }],
-  [{ t: '});', c: '#82aaff' }],
-  [{ t: '', c: '#fff' }],
-  [{ t: '// Render visual motion secara real-time', c: '#64748b' }],
-  [{ t: 'await', c: '#c792ea' }, { t: ' motionAgent.', c: '#e2e8f0' }, { t: 'exportVideo', c: '#82aaff' }, { t: '({ quality: ', c: '#e2e8f0' }, { t: '"ULTRA"', c: '#ffcb6b' }, { t: ' });', c: '#e2e8f0' }]
-];
-
-const totalChars = codeLines.reduce((sum, line) => sum + line.reduce((s, seg) => s + seg.t.length, 0), 0);
-const typeProgress = Math.min(Math.max((progress - 0.1) / 0.72, 0), 1);
-const visibleChars = Math.floor(totalChars * typeProgress);
-
-let charCounter = 0;
-const fontSize = Math.max(18, Math.floor(winW * 0.021));
-const lineHeight = fontSize * 1.65;
-ctx.font = \`500 \${fontSize}px "JetBrains Mono", monospace\`;
-ctx.textAlign = 'left';
-
-let cursorX = winX + 85;
-let cursorY = winY + 105;
-
-codeLines.forEach((line, lineIdx) => {
-  const y = winY + 105 + lineIdx * lineHeight;
-  ctx.fillStyle = '#475569';
-  ctx.fillText(String(lineIdx + 1).padStart(2, '0'), winX + 30, y);
-
-  let x = winX + 85;
-  line.forEach(seg => {
-    if (charCounter >= visibleChars) return;
-    const remaining = visibleChars - charCounter;
-    const textToDraw = seg.t.slice(0, remaining);
-    
-    ctx.fillStyle = seg.c;
-    ctx.fillText(textToDraw, x, y);
-    x += ctx.measureText(textToDraw).width;
-    charCounter += seg.t.length;
-    
-    cursorX = x;
-    cursorY = y;
-  });
-});
-
-if (Math.sin(t * 10) > 0 || typeProgress < 1) {
-  ctx.fillStyle = '#38bdf8';
-  ctx.fillRect(cursorX + 4, cursorY - fontSize + 4, 11, fontSize + 2);
-}
-
-ctx.restore();`
+        code: ""
       },
 
       kineticType: {
-        name: "kinetic_typography.js",
+        name: "kinetic_text.js",
         mode: "js",
-        code: `// PRESET: Kinetic Typography Dinamis
-ctx.fillStyle = '#07070a';
-ctx.fillRect(0, 0, w, h);
-
-ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-ctx.lineWidth = 1;
-const gridSize = 80;
-const offsetGrid = (t * 30) % gridSize;
-for (let x = offsetGrid; x < w; x += gridSize) {
-  ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-}
-for (let y = offsetGrid; y < h; y += gridSize) {
-  ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-}
-
-const scenes = [
-  { word: "TULIS KODE.", sub: "DARI IDE MENJADI REALITA", accent: "#6366f1", start: 0.0, end: 0.34 },
-  { word: "GERAKKAN.", sub: "ANIMASI PRESISI 60 FPS", accent: "#06b6d4", start: 0.34, end: 0.68 },
-  { word: "EKSPOR MP4.", sub: "SIAP TAYANG DI MANA SAJA", accent: "#ec4899", start: 0.68, end: 1.0 }
-];
-
-const active = scenes.find(s => progress >= s.start && progress <= s.end) || scenes[scenes.length - 1];
-const localP = (progress - active.start) / (active.end - active.start);
-
-const popIn = easeOutElastic(Math.min(localP * 2.5, 1));
-const fadeOut = localP > 0.82 ? 1 - ((localP - 0.82) / 0.18) : 1;
-
-ctx.save();
-ctx.translate(w / 2, h / 2);
-ctx.globalAlpha = Math.max(0, fadeOut);
-
-const circleRadius = Math.min(w, h) * 0.28 * popIn;
-const radGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, circleRadius);
-radGrad.addColorStop(0, active.accent + '55');
-radGrad.addColorStop(1, 'transparent');
-ctx.fillStyle = radGrad;
-ctx.beginPath();
-ctx.arc(0, 0, circleRadius, 0, Math.PI * 2);
-ctx.fill();
-
-const mainFontSize = Math.floor(Math.min(w, h) * 0.115);
-ctx.font = \`800 \${mainFontSize}px "Inter", sans-serif\`;
-ctx.textAlign = 'center';
-ctx.textBaseline = 'middle';
-
-const scale = 0.75 + 0.25 * popIn;
-ctx.scale(scale, scale);
-
-if (localP < 0.2) {
-  const shift = (0.2 - localP) * 60;
-  ctx.fillStyle = 'rgba(236, 72, 153, 0.7)';
-  ctx.fillText(active.word, -shift, 0);
-  ctx.fillStyle = 'rgba(6, 182, 212, 0.7)';
-  ctx.fillText(active.word, shift, 0);
-}
-
-ctx.fillStyle = '#ffffff';
-ctx.fillText(active.word, 0, 0);
-
-const subY = mainFontSize * 0.95;
-const subFontSize = Math.max(16, Math.floor(mainFontSize * 0.22));
-ctx.font = \`600 \${subFontSize}px "JetBrains Mono", monospace\`;
-const badgeW = ctx.measureText(active.sub).width + 44;
-const badgeH = subFontSize * 2.1;
-
-ctx.fillStyle = active.accent;
-roundRect(ctx, -badgeW / 2, subY - badgeH / 2, badgeW, badgeH, 999);
-ctx.fill();
-
-ctx.fillStyle = '#ffffff';
-ctx.fillText(active.sub, 0, subY + 1);
-
-ctx.restore();`
+        code: ""
       },
 
       uiCard: {
-        name: "animated_ui_card.js",
+        name: "ui_card.js",
         mode: "js",
-        code: `// PRESET: Animated Glassmorphism UI Analytics Card
-const bg = ctx.createLinearGradient(0, 0, w, h);
-bg.addColorStop(0, '#0f172a');
-bg.addColorStop(0.5, '#1e1b4b');
-bg.addColorStop(1, '#09090b');
-ctx.fillStyle = bg;
-ctx.fillRect(0, 0, w, h);
-
-const orb1X = w * 0.32 + Math.cos(t * 1.5) * 60;
-const orb1Y = h * 0.35 + Math.sin(t * 1.2) * 40;
-const g1 = ctx.createRadialGradient(orb1X, orb1Y, 10, orb1X, orb1Y, 280);
-g1.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
-g1.addColorStop(1, 'transparent');
-ctx.fillStyle = g1;
-ctx.fillRect(0, 0, w, h);
-
-const orb2X = w * 0.68 + Math.sin(t * 1.3) * 60;
-const orb2Y = h * 0.65 + Math.cos(t * 1.6) * 40;
-const g2 = ctx.createRadialGradient(orb2X, orb2Y, 10, orb2X, orb2Y, 300);
-g2.addColorStop(0, 'rgba(168, 85, 247, 0.45)');
-g2.addColorStop(1, 'transparent');
-ctx.fillStyle = g2;
-ctx.fillRect(0, 0, w, h);
-
-const cardEnter = easeOutCubic(Math.min(progress * 3, 1));
-const cardW = Math.min(w * 0.76, 780);
-const cardH = Math.min(h * 0.62, 460);
-const cardX = (w - cardW) / 2;
-const cardY = (h - cardH) / 2 + (1 - cardEnter) * 60;
-
-ctx.save();
-ctx.globalAlpha = cardEnter;
-
-ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
-roundRect(ctx, cardX, cardY, cardW, cardH, 28);
-ctx.fill();
-
-ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
-ctx.lineWidth = 2;
-ctx.stroke();
-
-const pad = cardW * 0.065;
-ctx.fillStyle = '#94a3b8';
-ctx.font = '600 18px "Inter", sans-serif';
-ctx.textAlign = 'left';
-ctx.fillText('PERTUMBUHAN PENDAPATAN BULANAN', cardX + pad, cardY + pad + 10);
-
-const statProgress = easeOutCubic(Math.min(Math.max((progress - 0.15) / 0.6, 0), 1));
-const revenue = Math.floor(148500 * statProgress).toLocaleString('id-ID');
-
-ctx.fillStyle = '#ffffff';
-ctx.font = \`800 \${Math.floor(cardW * 0.075)}px "Inter", sans-serif\`;
-ctx.fillText(\`Rp \${revenue} jt\`, cardX + pad, cardY + pad + 72);
-
-ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
-roundRect(ctx, cardX + pad, cardY + pad + 92, 135, 34, 999);
-ctx.fill();
-ctx.fillStyle = '#34d399';
-ctx.font = '700 16px "JetBrains Mono", monospace';
-ctx.fillText('▲ +34.8% YoY', cardX + pad + 16, cardY + pad + 114);
-
-const bars = [0.35, 0.52, 0.44, 0.68, 0.61, 0.85, 1.0];
-const labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-const chartAreaY = cardY + cardH - pad - 35;
-const maxBarH = cardH * 0.36;
-const barSpacing = (cardW - pad * 2) / bars.length;
-const barW = barSpacing * 0.58;
-
-bars.forEach((val, i) => {
-  const delay = i * 0.05;
-  const barP = easeOutCubic(Math.min(Math.max((progress - 0.2 - delay) / 0.45, 0), 1));
-  const hBar = val * maxBarH * barP;
-  const bx = cardX + pad + i * barSpacing + (barSpacing - barW) / 2;
-  const by = chartAreaY - hBar;
-
-  const barGrad = ctx.createLinearGradient(0, by, 0, chartAreaY);
-  if (i === bars.length - 1) {
-    barGrad.addColorStop(0, '#38bdf8');
-    barGrad.addColorStop(1, '#6366f1');
-  } else {
-    barGrad.addColorStop(0, 'rgba(255,255,255,0.45)');
-    barGrad.addColorStop(1, 'rgba(255,255,255,0.12)');
-  }
-
-  ctx.fillStyle = barGrad;
-  roundRect(ctx, bx, by, barW, Math.max(hBar, 4), 10);
-  ctx.fill();
-
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '500 15px "Inter", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(labels[i], bx + barW / 2, chartAreaY + 24);
-});
-
-ctx.restore();`
+        code: ""
       },
 
       customHtml: {
         name: "custom_scene.html",
         mode: "html",
-        code: `<!-- PRESET 5: Custom HTML & CSS Motion -->
-<!-- Gunakan variabel CSS var(--progress) bernilai 0 s/d 1 untuk animasi -->
-<style>
-  .scene {
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 30% 30%, #1e1b4b, #09090b 75%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Inter', sans-serif;
-    color: white;
-    overflow: hidden;
-    position: relative;
-  }
-  .ring {
-    position: absolute;
-    width: 520px;
-    height: 520px;
-    border-radius: 50%;
-    border: 3px dashed rgba(99, 102, 241, 0.45);
-    transform: rotate(calc(var(--progress) * 360deg)) scale(calc(0.8 + var(--progress) * 0.3));
-  }
-  .badge {
-    background: linear-gradient(90deg, #6366f1, #06b6d4);
-    padding: 10px 26px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 20px;
-    letter-spacing: 2px;
-    margin-bottom: 24px;
-    transform: translateY(calc((1 - min(var(--progress) * 3, 1)) * 40px));
-    opacity: min(var(--progress) * 3, 1);
-  }
-  .headline {
-    font-size: 76px;
-    font-weight: 800;
-    text-align: center;
-    line-height: 1.1;
-    background: linear-gradient(to right, #ffffff, #a5b4fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transform: scale(calc(0.85 + var(--progress) * 0.15));
-  }
-</style>
-
-<div class="scene">
-  <div class="ring"></div>
-  <div class="badge">HTML + CSS MOTION</div>
-  <div class="headline">Desain Web<br/>Jadi Video MP4</div>
-</div>`
+        code: ""
       }
     };
 
@@ -956,7 +687,8 @@ ctx.restore();`
     const state = {
       isPlaying: true,
       currentPreset: 'auroraStars',
-      mode: 'js', // 'js' atau 'html'
+      mode: 'js', // 'js', 'html', atau 'showcase'
+      modeOverride: 'auto', // 'auto', 'canvas', 'html', 'showcase'
       width: 1920,
       height: 1080,
       duration: 5.0,
@@ -1031,8 +763,186 @@ ctx.restore();`
     // =========================================================================
     // 4. INISIALISASI & KOMPILASI KODE EDITOR
     // =========================================================================
+    const SAVED_SCRIPTS_STORAGE_KEY = 'codemotion_saved_scripts_v1';
+
+    function getSavedScripts() {
+      try {
+        return JSON.parse(localStorage.getItem(SAVED_SCRIPTS_STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function refreshSavedScriptsDropdown(selectedId = '') {
+      const list = getSavedScripts();
+      const sel = document.getElementById('savedScriptsSelect');
+      const delBtn = document.getElementById('btnDeleteSaved');
+      if (!sel) return;
+
+      sel.innerHTML = `<option value="">-- Koleksi Kode Tersimpan (${list.length}) --</option>` +
+        list.map(item => `<option value="${item.id}" ${item.id === selectedId ? 'selected' : ''}>${item.name}</option>`).join('');
+
+      if (selectedId && list.some(x => x.id === selectedId)) {
+        delBtn.classList.remove('hidden');
+      } else {
+        delBtn.classList.add('hidden');
+      }
+    }
+
+    function openSaveScriptModal() {
+      const modal = document.getElementById('saveScriptModal');
+      const input = document.getElementById('saveScriptNameInput');
+      input.value = state.params.title || `Motion Script #${getSavedScripts().length + 1}`;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => { input.focus(); input.select(); }, 50);
+    }
+
+    function closeSaveScriptModal() {
+      const modal = document.getElementById('saveScriptModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function confirmSaveScript() {
+      const name = document.getElementById('saveScriptNameInput').value.trim() || `Script ${Date.now()}`;
+      const list = getSavedScripts();
+      const newItem = {
+        id: 'script_' + Date.now(),
+        name,
+        code: codeEditor.value,
+        modeOverride: state.modeOverride
+      };
+      list.unshift(newItem);
+      localStorage.setItem(SAVED_SCRIPTS_STORAGE_KEY, JSON.stringify(list));
+      refreshSavedScriptsDropdown(newItem.id);
+      closeSaveScriptModal();
+      showToast(`Kode "${name}" tersimpan di koleksi!`);
+    }
+
+    function loadSavedScript(id) {
+      const delBtn = document.getElementById('btnDeleteSaved');
+      if (!id) {
+        delBtn.classList.add('hidden');
+        return;
+      }
+      const item = getSavedScripts().find(x => x.id === id);
+      if (!item) return;
+
+      codeEditor.value = item.code;
+      state.modeOverride = item.modeOverride || 'auto';
+      document.getElementById('renderModeOverride').value = state.modeOverride;
+      document.getElementById('editorFileName').innerHTML = `<i data-lucide="bookmark" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i> ${item.name}`;
+      delBtn.classList.remove('hidden');
+      lucide.createIcons();
+      updateLineNumbers();
+      compileUserCode();
+      restartAnimation();
+      showToast(`Memuat "${item.name}"`);
+    }
+
+    function deleteCurrentSavedScript() {
+      const sel = document.getElementById('savedScriptsSelect');
+      const id = sel.value;
+      if (!id) return;
+      const list = getSavedScripts().filter(x => x.id !== id);
+      localStorage.setItem(SAVED_SCRIPTS_STORAGE_KEY, JSON.stringify(list));
+      refreshSavedScriptsDropdown('');
+      showToast('Kode tersimpan dihapus.');
+    }
+
+    function handleCodeFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        codeEditor.value = e.target.result || '';
+        state.modeOverride = 'auto';
+        document.getElementById('renderModeOverride').value = 'auto';
+        document.getElementById('editorFileName').innerHTML = `<i data-lucide="file-code" class="w-3.5 h-3.5 text-cyan-400 shrink-0"></i> ${file.name}`;
+        lucide.createIcons();
+        updateLineNumbers();
+        compileUserCode();
+        restartAnimation();
+        showToast(`File "${file.name}" dimuat & diubah menjadi motion!`);
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function clearEditorCode() {
+      codeEditor.value = '';
+      document.getElementById('savedScriptsSelect').value = '';
+      document.getElementById('btnDeleteSaved').classList.add('hidden');
+      document.getElementById('editorFileName').innerHTML = `<i data-lucide="file-plus" class="w-3.5 h-3.5 text-indigo-400 shrink-0"></i> kode_baru.js`;
+      lucide.createIcons();
+      updateLineNumbers();
+      codeEditor.focus();
+      showToast('Editor dikosongkan. Silakan tempel (Ctrl+V) kode baru Anda!');
+    }
+
+    function updateSettings() {
+      const resVal = document.getElementById('resSelect').value;
+      const [wStr, hStr] = resVal.split('x');
+      state.width = parseInt(wStr, 10) || 1920;
+      state.height = parseInt(hStr, 10) || 1080;
+
+      const durVal = parseFloat(document.getElementById('durationInput').value);
+      state.duration = isNaN(durVal) ? 5.0 : Math.min(30, Math.max(1, durVal));
+
+      state.fps = parseInt(document.getElementById('fpsSelect').value, 10) || 60;
+      state.speed = parseFloat(document.getElementById('speedSelect').value) || 1.0;
+
+      if (state.currentTime > state.duration) {
+        state.currentTime = 0;
+      }
+
+      updateCanvasDimensions();
+      updateTimelineUI();
+      renderFrameAtTime(state.currentTime);
+    }
+
+    function updateCanvasDimensions() {
+      canvas.width = state.width;
+      canvas.height = state.height;
+
+      document.getElementById('badgeResolution').textContent = `${state.width} × ${state.height}`;
+      const aspectEl = document.getElementById('badgeAspect');
+      if (state.width === state.height) aspectEl.textContent = '1:1 Square';
+      else if (state.width > state.height) aspectEl.textContent = '16:9 Landscape';
+      else aspectEl.textContent = '9:16 Portrait / Reels';
+
+      fitCanvasToViewport();
+    }
+
+    function fitCanvasToViewport() {
+      const container = document.getElementById('viewportContainer');
+      const wrapper = document.getElementById('canvasFrameWrapper');
+      if (!container || !wrapper) return;
+
+      const pad = window.innerWidth < 640 ? 24 : 48;
+      const availW = Math.max(160, container.clientWidth - pad);
+      const availH = Math.max(140, container.clientHeight - pad);
+      const ratio = state.width / state.height;
+
+      let targetW = availW;
+      let targetH = targetW / ratio;
+
+      if (targetH > availH) {
+        targetH = availH;
+        targetW = targetH * ratio;
+      }
+
+      wrapper.style.width = `${Math.floor(targetW)}px`;
+      wrapper.style.height = `${Math.floor(targetH)}px`;
+
+      const zoomPct = Math.round((targetW / state.width) * 100);
+      document.getElementById('zoomLevelText').textContent = `Fit ${zoomPct}%`;
+    }
+
     function init() {
       lucide.createIcons();
+      refreshSavedScriptsDropdown();
       loadPreset('auroraStars');
       updateCanvasDimensions();
       window.addEventListener('resize', fitCanvasToViewport);
@@ -1081,7 +991,10 @@ ctx.restore();`
       if (!preset) return;
 
       state.currentPreset = presetKey;
-      state.mode = preset.mode;
+      state.modeOverride = 'auto';
+      const overrideEl = document.getElementById('renderModeOverride');
+      if (overrideEl) overrideEl.value = 'auto';
+
       codeEditor.value = preset.code;
       document.getElementById('editorFileName').innerHTML = `<i data-lucide="file-code" class="w-3.5 h-3.5 text-indigo-400"></i> ${preset.name}`;
       document.getElementById('mobilePresetSelect').value = presetKey;
@@ -1097,6 +1010,37 @@ ctx.restore();`
 
       lucide.createIcons();
       updateLineNumbers();
+      compileUserCode();
+      restartAnimation();
+    }
+
+    async function pasteAndRunCode() {
+      try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          const text = await navigator.clipboard.readText();
+          if (text && text.trim()) {
+            codeEditor.value = text;
+            state.modeOverride = 'auto';
+            document.getElementById('renderModeOverride').value = 'auto';
+            updateLineNumbers();
+            compileUserCode();
+            restartAnimation();
+            state.isPlaying = true;
+            updatePlayButtonUI();
+            showToast('Kode berhasil ditempel & diubah menjadi motion!');
+            return;
+          }
+        }
+      } catch (e) {
+        // Fallback jika izin clipboard dibatasi iFrame
+      }
+      codeEditor.focus();
+      codeEditor.select();
+      showToast('Tekan Ctrl+V / Cmd+V di editor untuk menempel kode Anda!');
+    }
+
+    function onRenderModeOverrideChange() {
+      state.modeOverride = document.getElementById('renderModeOverride').value;
       compileUserCode();
       restartAnimation();
     }
@@ -1201,43 +1145,140 @@ ctx.restore();`
       lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join('<br>');
     }
 
+    // Normalisasi otomatis berbagai variasi script Canvas JS (misal function draw(ctx, w, h, t), canvas.width, dsb.)
+    function normalizeCanvasScript(rawCode) {
+      let code = rawCode;
+
+      // Hapus deklarasi const/let canvas atau ctx jika user menyalin kode lengkap dari luar
+      code = code.replace(/^\s*(?:const|let|var)\s+canvas\s*=\s*document\.[^\n;]+;?/gm, '');
+      code = code.replace(/^\s*(?:const|let|var)\s+ctx\s*=\s*canvas\.getContext\([^)]+\);?/gm, '');
+      code = code.replace(/^\s*canvas\.(?:width|height)\s*=\s*[^\n;]+;?/gm, '');
+
+      // Jika kode membungkus animasi di dalam fungsi draw/render/animate/loop, panggil otomatis
+      const fnMatch = code.match(/(?:function\s+(draw|render|animate|loop|update)\s*\(([^)]*)\)|(?:const|let|var)\s+(draw|render|animate|loop|update)\s*=\s*\(([^)]*)\)\s*=>)/);
+      if (fnMatch) {
+        const fnName = fnMatch[1] || fnMatch[3];
+        const paramsStr = (fnMatch[2] || fnMatch[4] || '').trim();
+        // Ganti requestAnimationFrame internal agar tidak membuat loop ganda saat ekspor MP4
+        code = code.replace(/requestAnimationFrame\s*\([^)]+\)\s*;?/g, '');
+
+        if (!paramsStr) {
+          code += `\n;if (typeof ${fnName} === 'function') { ${fnName}(); }`;
+        } else {
+          // Mapping parameter umum: ctx, w/width, h/height, t/time/progress
+          const mappedArgs = paramsStr.split(',').map(p => {
+            const name = p.trim().split('=')[0].trim().toLowerCase();
+            if (name === 'ctx' || name === 'context' || name === 'c') return 'ctx';
+            if (name === 'w' || name === 'width') return 'w';
+            if (name === 'h' || name === 'height') return 'h';
+            if (name === 't' || name === 'time' || name === 'elapsed') return 't';
+            if (name === 'p' || name === 'progress') return 'progress';
+            if (name === 'frame' || name === 'f') return 'frame';
+            return 't';
+          });
+          code += `\n;if (typeof ${fnName} === 'function') { ${fnName}(${mappedArgs.join(', ')}); }`;
+        }
+      }
+
+      return code;
+    }
+
+    // Deteksi apakah kode merupakan script visual Canvas atau kode program umum
+    function detectCodeCategory(rawCode) {
+      if (state.modeOverride !== 'auto') {
+        return state.modeOverride === 'canvas' ? 'js' : state.modeOverride;
+      }
+
+      const trimmed = rawCode.trim();
+      if (!trimmed) return 'js';
+
+      // 1. HTML / SVG / CSS
+      if (/^(<!doctype|<html|<div|<svg|<style|<section|<canvas|<p\b|<h[1-6]\b|<span)/i.test(trimmed)) {
+        return 'html';
+      }
+
+      // 2. Canvas 2D / Motion API keywords
+      const canvasSignals = [
+        /\bctx\./,
+        /\b(fillRect|strokeRect|clearRect|createLinearGradient|createRadialGradient|beginPath|arc|moveTo|lineTo|fillText|strokeText|roundRect|drawImage|save|restore|translate|rotate|scale)\b/,
+        /\b(easeOutCubic|easeInOutCubic|easeOutElastic|easeOutBounce)\b/,
+        /\bcanvas\.getContext\b/
+      ];
+      if (canvasSignals.some(rx => rx.test(trimmed))) {
+        return 'js';
+      }
+
+      // 3. Jika valid JavaScript dan memanipulasi variabel w, h, t, progress secara matematis
+      try {
+        new Function('ctx', 'w', 'h', 't', 'progress', 'width', 'height', 'time', 'frame', 'params', trimmed);
+        // Valid JS, cek apakah tampak seperti kode aplikasi biasa (import/export/class/def/SELECT) atau visual
+        if (/^\s*(import\s+|export\s+|class\s+|interface\s+|type\s+)/m.test(trimmed)) {
+          return 'showcase';
+        }
+        return 'js';
+      } catch (e) {
+        // Bukan JS valid (misalnya Python, PHP, SQL, C++, Rust, Go, Java, bash, dsb.) -> otomatis Showcase Motion!
+        return 'showcase';
+      }
+    }
+
     function compileUserCode() {
       const rawCode = codeEditor.value.trim();
       const errorConsole = document.getElementById('errorConsole');
       const errorText = document.getElementById('errorText');
       const compileStatus = document.getElementById('compileStatus');
 
-      // Deteksi otomatis apakah mode HTML/CSS atau JS Canvas
-      if (rawCode.startsWith('<')) {
-        state.mode = 'html';
+      const detectedMode = detectCodeCategory(rawCode);
+      state.mode = detectedMode;
+
+      // Mode 1: HTML / CSS / SVG
+      if (detectedMode === 'html') {
         errorConsole.classList.add('hidden');
-        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Mode HTML/CSS`;
+        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> HTML/CSS Motion`;
         compileStatus.className = 'text-[11px] text-cyan-300 flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-500/10';
         if (!state.isPlaying) renderFrameAtTime(state.currentTime);
         return;
       }
 
-      state.mode = 'js';
+      // Mode 2: Auto-Animate Kode Program Apapun (Syntax Highlighted Motion Window)
+      if (detectedMode === 'showcase') {
+        errorConsole.classList.add('hidden');
+        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span> Code-to-Motion`;
+        compileStatus.className = 'text-[11px] text-purple-300 flex items-center gap-1 px-2 py-0.5 rounded bg-purple-500/10';
+        if (!state.isPlaying) renderFrameAtTime(state.currentTime);
+        return;
+      }
+
+      // Mode 3: Native Canvas 2D JS
       try {
-        // Buat fungsi terisolasi dengan variabel native ctx, w, h, t, progress (+ alias & params)
+        const normalizedCode = normalizeCanvasScript(rawCode);
         const fn = new Function(
           'ctx', 'w', 'h', 't', 'progress',
           'width', 'height', 'time', 'frame', 'params',
           'easeOutCubic', 'easeInOutCubic', 'easeOutElastic', 'easeOutBounce',
           'roundRect', 'roundRectTop',
-          rawCode
+          normalizedCode
         );
         state.compiledFn = fn;
         errorConsole.classList.add('hidden');
-        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Aktif`;
+        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Canvas 2D Aktif`;
         compileStatus.className = 'text-[11px] text-emerald-400 flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10';
         
         if (!state.isPlaying) renderFrameAtTime(state.currentTime);
       } catch (err) {
-        errorText.textContent = `Syntax Error: ${err.message}`;
-        errorConsole.classList.remove('hidden');
-        compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Error`;
-        compileStatus.className = 'text-[11px] text-rose-400 flex items-center gap-1 px-2 py-0.5 rounded bg-rose-500/10';
+        // Jika terjadi syntax error saat mode 'auto', otomatis fallback ke mode Showcase Motion agar SEMUA kode tetap bisa jadi animasi!
+        if (state.modeOverride === 'auto') {
+          state.mode = 'showcase';
+          errorConsole.classList.add('hidden');
+          compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span> Auto-Code Motion`;
+          compileStatus.className = 'text-[11px] text-purple-300 flex items-center gap-1 px-2 py-0.5 rounded bg-purple-500/10';
+          if (!state.isPlaying) renderFrameAtTime(state.currentTime);
+        } else {
+          errorText.textContent = `Syntax Error: ${err.message}`;
+          errorConsole.classList.remove('hidden');
+          compileStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Error`;
+          compileStatus.className = 'text-[11px] text-rose-400 flex items-center gap-1 px-2 py-0.5 rounded bg-rose-500/10';
+        }
       }
     }
 
@@ -1248,54 +1289,166 @@ ctx.restore();`
     }
 
     // =========================================================================
-    // 5. PENGATURAN RESOLUSI, DURASI & FIT VIEWPORT
+    // 6. ENGINE RENDERING FRAME (JS CANVAS, CODE SHOWCASE & HTML FOREIGNOBJECT)
     // =========================================================================
-    function updateSettings() {
-      const [w, h] = document.getElementById('resSelect').value.split('x').map(Number);
-      state.width = w;
-      state.height = h;
-      state.duration = Math.max(1, Math.min(30, parseFloat(document.getElementById('durationInput').value) || 5));
-      state.fps = parseInt(document.getElementById('fpsSelect').value, 10);
-      state.speed = parseFloat(document.getElementById('speedSelect').value);
+    function renderCodeShowcaseMotion(timeSec, progress) {
+      const w = state.width;
+      const h = state.height;
+      const rawCode = codeEditor.value || '// Tempel kode Anda di sini';
+      const lines = rawCode.replace(/\r\n/g, '\n').split('\n');
 
-      if (state.currentTime > state.duration) state.currentTime = 0;
+      // 1. Latar Belakang Aurora + Grid Sinematik
+      const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+      bgGrad.addColorStop(0, '#060913');
+      bgGrad.addColorStop(0.5, '#0f172a');
+      bgGrad.addColorStop(1, '#090d16');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
 
-      // Update label UI
-      document.getElementById('badgeResolution').textContent = `${w} × ${h}`;
-      const aspectLabel = w === h ? '1:1 Square' : (w > h ? '16:9 Landscape' : '9:16 Reels/TikTok');
-      document.getElementById('badgeAspect').textContent = aspectLabel;
+      const speed = state.params.auroraSpeed || 1;
+      const glow1 = ctx.createRadialGradient(
+        w * (0.28 + Math.cos(timeSec * 0.6 * speed) * 0.1),
+        h * (0.32 + Math.sin(timeSec * 0.5 * speed) * 0.08),
+        20, w * 0.3, h * 0.3, Math.max(w, h) * 0.55
+      );
+      glow1.addColorStop(0, 'rgba(99, 102, 241, 0.28)');
+      glow1.addColorStop(1, 'rgba(99, 102, 241, 0)');
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, w, h);
 
-      updateCanvasDimensions();
-      updateTimelineUI();
-      renderFrameAtTime(state.currentTime);
+      const glow2 = ctx.createRadialGradient(
+        w * (0.74 + Math.sin(timeSec * 0.45 * speed) * 0.1),
+        h * (0.68 + Math.cos(timeSec * 0.55 * speed) * 0.08),
+        20, w * 0.72, h * 0.68, Math.max(w, h) * 0.5
+      );
+      glow2.addColorStop(0, 'rgba(6, 182, 212, 0.22)');
+      glow2.addColorStop(1, 'rgba(6, 182, 212, 0)');
+      ctx.fillStyle = glow2;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Kartu Editor Glassmorphism dengan Animasi Masuk & Floating Halus
+      const enter = helpers.easeOutCubic(Math.min(progress * 4.5, 1));
+      const floatY = Math.sin(timeSec * 1.8) * 6;
+      const winW = Math.min(w * 0.84, 1280);
+      const winH = Math.min(h * 0.74, 760);
+      const winX = (w - winW) / 2;
+      const winY = (h - winH) / 2 + (1 - enter) * 45 + floatY;
+
+      ctx.save();
+      ctx.globalAlpha = enter;
+
+      // Bayangan Window
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+      ctx.shadowBlur = 55;
+      ctx.shadowOffsetY = 26;
+      ctx.fillStyle = 'rgba(13, 17, 28, 0.92)';
+      helpers.roundRect(ctx, winX, winY, winW, winH, 22);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.2)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Header Window macOS
+      const headerH = 54;
+      ctx.fillStyle = 'rgba(24, 30, 46, 0.96)';
+      helpers.roundRectTop(ctx, winX, winY, winW, headerH, 22);
+      ctx.fill();
+
+      ['#ff5f56', '#ffbd2e', '#27c93f'].forEach((c, idx) => {
+        ctx.fillStyle = c;
+        ctx.beginPath();
+        ctx.arc(winX + 30 + idx * 22, winY + headerH / 2, 7, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      const titleLabel = state.params.title || 'source_code_motion';
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 16px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(titleLabel, winX + winW / 2, winY + headerH / 2);
+
+      // 3. Render Ketikan Kode + Auto-Scroll + Syntax Highlighting Universal
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(winX, winY + headerH, winW, winH - headerH);
+      ctx.clip();
+
+      const fontSize = Math.max(15, Math.min(24, Math.floor(winW * 0.019)));
+      const lineHeight = Math.round(fontSize * 1.62);
+      ctx.font = `500 ${fontSize}px "JetBrains Mono", monospace`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+
+      const totalChars = lines.reduce((sum, l) => sum + l.length + 1, 0);
+      const typeRatio = Math.min(Math.max((progress - 0.06) / 0.78, 0), 1);
+      const visibleChars = Math.floor(totalChars * typeRatio);
+
+      const contentAreaH = winH - headerH - 48;
+      const totalCodeH = lines.length * lineHeight;
+      const scrollY = totalCodeH > contentAreaH
+        ? Math.max(0, Math.min(totalCodeH - contentAreaH, typeRatio * totalCodeH - contentAreaH * 0.65))
+        : 0;
+
+      const tokenRegex = /(".*?"|'.*?'|`.*?`|\/\/.*$|#.*$|--.*$|\b\d+(?:\.\d+)?\b|\b(?:const|let|var|function|return|if|else|for|while|async|await|try|catch|class|import|from|export|def|print|SELECT|FROM|WHERE|public|private|func|package|struct|void|int|float|true|false|null|None|True|False)\b|\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\()|[{}()\[\].,:;+\-*/%=<>!&|?]+|\s+|[^\s]+)/g;
+
+      let charCount = 0;
+      let cursorX = winX + 82;
+      let cursorY = winY + headerH + 34;
+
+      lines.forEach((line, idx) => {
+        const y = winY + headerH + 34 + idx * lineHeight - scrollY;
+        if (charCount > visibleChars) return;
+
+        // Nomor baris
+        ctx.fillStyle = '#475569';
+        ctx.fillText(String(idx + 1).padStart(2, '0'), winX + 26, y);
+
+        const maxLineChars = Math.max(0, visibleChars - charCount);
+        const visibleLine = line.slice(0, maxLineChars);
+        charCount += line.length + 1;
+
+        let x = winX + 82;
+        const tokens = visibleLine.match(tokenRegex) || [];
+        tokens.forEach(tok => {
+          if (/^(".*"|'.*'|`.*`)$/.test(tok)) ctx.fillStyle = '#a5d6ff';
+          else if (/^(\/\/|#|--)/.test(tok)) ctx.fillStyle = '#64748b';
+          else if (/^\d/.test(tok)) ctx.fillStyle = '#f78c6c';
+          else if (/^(const|let|var|function|return|if|else|for|while|async|await|try|catch|class|import|from|export|def|print|SELECT|FROM|WHERE|public|private|func|package|struct|void|int|float|true|false|null|None|True|False)$/.test(tok)) ctx.fillStyle = '#c792ea';
+          else if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(tok)) ctx.fillStyle = '#82aaff';
+          else if (/^[{}()\[\].,:;+\-*/%=<>!&|?]+$/.test(tok)) ctx.fillStyle = '#89ddff';
+          else ctx.fillStyle = '#e2e8f0';
+
+          ctx.fillText(tok, x, y);
+          x += ctx.measureText(tok).width;
+        });
+
+        cursorX = x;
+        cursorY = y;
+      });
+
+      // Kursor Berkedip
+      if (Math.sin(timeSec * 10) > 0 || typeRatio < 1) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(cursorX + 3, cursorY - fontSize * 0.55, 9, fontSize * 1.15);
+      }
+
+      ctx.restore();
+      ctx.restore();
     }
 
-    function updateCanvasDimensions() {
-      canvas.width = state.width;
-      canvas.height = state.height;
-      fitCanvasToViewport();
-    }
-
-    function fitCanvasToViewport() {
-      const container = document.getElementById('viewportContainer');
-      const wrapper = document.getElementById('canvasFrameWrapper');
-      if (!container || !wrapper) return;
-
-      const availW = container.clientWidth - 32;
-      const availH = container.clientHeight - 32;
-      const scale = Math.min(availW / state.width, availH / state.height, 1);
-
-      wrapper.style.width = `${Math.floor(state.width * scale)}px`;
-      wrapper.style.height = `${Math.floor(state.height * scale)}px`;
-      document.getElementById('zoomLevelText').textContent = `Zoom ${Math.round(scale * 100)}%`;
-    }
-
-    // =========================================================================
-    // 6. ENGINE RENDERING FRAME (JS CANVAS & HTML SVG FOREIGNOBJECT)
-    // =========================================================================
     function renderFrameAtTime(timeSec) {
       const progress = Math.min(Math.max(timeSec / state.duration, 0), 1);
       const frameIndex = Math.floor(timeSec * state.fps);
+
+      if (state.mode === 'showcase') {
+        renderCodeShowcaseMotion(timeSec, progress);
+        if (state.params.subtitle) renderTextOverlay(progress, timeSec);
+        return;
+      }
 
       if (state.mode === 'js') {
         if (!state.compiledFn) return;
